@@ -14,6 +14,14 @@ import Reportar from './pages/Reportar';
 import MisReportes from './pages/MisReportes';
 import AreasProtegidas from './pages/AreasProtegidas';
 import Mapa from './pages/Mapa';
+import SobreNosotros from './pages/SobreNosotros';
+import VideosEducativos from './pages/VideosEducativos';
+import MedidasAmbientales from './pages/MedidasAmbientales';
+import EquipoMinisterio from './pages/EquipoMinisterio';
+import AcercaDe from './pages/AcercaDe';
+import NormativasAmbientales from './pages/NormativasAmbientales';
+import MapaReportes from './pages/MapaReportes';
+import CambiarContraseña from './pages/CambiarContraseña';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -58,26 +66,24 @@ const App: React.FC = () => {
             {/* Home */}
             <Route path="/home" exact component={Home} />
 
-            {/* Noticias */}
-            <Route path="/noticias" exact component={Noticias} />
-
-            {/* Servicios */}
+            {/* Páginas principales */}
+            <Route path="/sobre-nosotros" exact component={SobreNosotros} />
             <Route path="/servicios" exact component={Servicios} />
-
-            {/* Voluntariado */}
-            <Route path="/voluntariado" exact component={Voluntariado} />
-
-            {/* Reportar daño ambiental */}
-            <Route path="/reportar" exact component={Reportar} />
-
-            {/* Mis reportes */}
-            <Route path="/mis-reportes" exact component={MisReportes} />
-
-            {/* Áreas protegidas */}
+            <Route path="/noticias" exact component={Noticias} />
+            <Route path="/videos-educativos" exact component={VideosEducativos} />
             <Route path="/areas-protegidas" exact component={AreasProtegidas} />
-
-            {/* Mapa de áreas */}
             <Route path="/mapa" exact component={Mapa} />
+            <Route path="/medidas-ambientales" exact component={MedidasAmbientales} />
+            <Route path="/equipo-ministerio" exact component={EquipoMinisterio} />
+            <Route path="/voluntariado" exact component={Voluntariado} />
+            <Route path="/acerca-de" exact component={AcercaDe} />
+
+            {/* Páginas de usuario (requieren login) */}
+            <Route path="/normativas" exact component={NormativasAmbientales} />
+            <Route path="/reportar" exact component={Reportar} />
+            <Route path="/mis-reportes" exact component={MisReportes} />
+            <Route path="/mapa-reportes" exact component={MapaReportes} />
+            <Route path="/cambiar-contraseña" exact component={CambiarContraseña} />
 
             {/* Páginas dinámicas del folder */}
             <Route path="/folder/:name" exact component={Page} />

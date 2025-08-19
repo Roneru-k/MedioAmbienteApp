@@ -10,6 +10,18 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  server: {
+    port: 8102,
+    host: true,
+    proxy: {
+      '/api': {
+        target: 'https://adamix.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/medioambiente'),
+        secure: false
+      }
+    }
+  },
   test: {
     globals: true,
     environment: 'jsdom',
