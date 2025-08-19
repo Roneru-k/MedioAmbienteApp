@@ -11,9 +11,13 @@ const api = axios.create({
 // Interceptor para agregar token de autenticación
 api.interceptors.request.use(
   async (config) => {
-    const token = await storage.get('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const token = await storage.get('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.error('Error al obtener token:', error);
     }
     return config;
   },
@@ -28,9 +32,13 @@ api.interceptors.response.use(
   error => {
     console.error('API Error:', error.response || error.message);
     if (error.response?.status === 401) {
-      // Token expirado, redirigir al login
-      storage.clear();
-      window.location.href = '/login';
+      // Token expirado, limpiar storage pero no redirigir automáticamente
+      // La redirección se manejará en el componente ProtectedRoute
+      try {
+        storage.clear();
+      } catch (clearError) {
+        console.error('Error al limpiar storage:', clearError);
+      }
     }
     return Promise.reject(error);
   }

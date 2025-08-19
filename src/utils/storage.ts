@@ -1,14 +1,19 @@
 import { Storage } from '@ionic/storage';
-import localforage from 'localforage';
 
-// Crear almacenamiento con prioridad: IndexedDB -> LocalStorage
-const storage = new Storage({
-  name: '__medioambiente_storage', // nombre de la base de datos
-  driverOrder: [localforage.INDEXEDDB, localforage.LOCALSTORAGE],
-});
+// Crear almacenamiento con configuración simplificada
+const storage = new Storage();
 
-storage.create().then(() => {
-  console.log('Ionic Storage inicializado ✅');
-});
+// Inicializar storage de forma asíncrona
+const initStorage = async () => {
+  try {
+    await storage.create();
+    console.log('Ionic Storage inicializado ✅');
+  } catch (error) {
+    console.error('Error al inicializar storage:', error);
+  }
+};
+
+// Inicializar inmediatamente
+initStorage();
 
 export default storage;

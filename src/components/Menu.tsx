@@ -32,6 +32,7 @@ import {
   lockClosedOutline,
   heartOutline,
   logInOutline,
+  shieldCheckmarkOutline,
 } from 'ionicons/icons';
 import { useAuth } from '../contexts/AuthContext';
 import './Menu.css';
@@ -46,17 +47,9 @@ interface AppPage {
 
 const appPages: AppPage[] = [
   // Páginas principales
+  { title: 'Prueba', url: '/test', iosIcon: homeOutline, mdIcon: homeOutline, section: 'main' },
   { title: 'Inicio', url: '/home', iosIcon: homeOutline, mdIcon: homeOutline, section: 'main' },
-  { title: 'Sobre Nosotros', url: '/sobre-nosotros', iosIcon: informationCircleOutline, mdIcon: informationCircleOutline, section: 'main' },
-  { title: 'Servicios', url: '/servicios', iosIcon: listOutline, mdIcon: listOutline, section: 'main' },
-  { title: 'Noticias Ambientales', url: '/noticias', iosIcon: newspaperOutline, mdIcon: newspaperOutline, section: 'main' },
-  { title: 'Videos Educativos', url: '/videos-educativos', iosIcon: playCircleOutline, mdIcon: playCircleOutline, section: 'main' },
-  { title: 'Áreas Protegidas', url: '/areas-protegidas', iosIcon: mapOutline, mdIcon: mapOutline, section: 'main' },
-  { title: 'Mapa de Áreas Protegidas', url: '/mapa-areas-protegidas', iosIcon: mapOutline, mdIcon: mapOutline, section: 'main' },
-  { title: 'Medidas Ambientales', url: '/medidas-ambientales', iosIcon: leafOutline, mdIcon: leafOutline, section: 'main' },
-  { title: 'Equipo del Ministerio', url: '/equipo-ministerio', iosIcon: personOutline, mdIcon: personOutline, section: 'main' },
-  { title: 'Voluntariado', url: '/voluntariado', iosIcon: peopleOutline, mdIcon: peopleOutline, section: 'main' },
-  { title: 'Acerca De', url: '/acerca-de', iosIcon: heartOutline, mdIcon: heartOutline, section: 'main' },
+  { title: 'Login', url: '/login', iosIcon: logInOutline, mdIcon: logInOutline, section: 'main' },
   
   // Páginas de usuario (requieren login)
   { title: 'Normativas Ambientales', url: '/normativas', iosIcon: documentOutline, mdIcon: documentOutline, section: 'user' },
@@ -87,7 +80,19 @@ const Menu: React.FC = () => {
     <IonMenu contentId="main" type="overlay">
       <IonContent>
         <IonList id="main-list">
-          <IonListHeader>Menú 🌱</IonListHeader>
+          <IonListHeader>
+            Menú 🌱
+            {isAuthenticated && (
+              <IonNote style={{ 
+                display: 'block', 
+                fontSize: '0.8em', 
+                color: 'var(--ion-color-success)',
+                marginTop: '4px'
+              }}>
+                ✅ Autenticado como {user?.nombre} {user?.apellido}
+              </IonNote>
+            )}
+          </IonListHeader>
           
           {isAuthenticated ? (
             <>
@@ -95,7 +100,10 @@ const Menu: React.FC = () => {
               <div style={{ 
                 padding: '16px', 
                 borderBottom: '1px solid var(--ion-color-light)',
-                marginBottom: '8px'
+                marginBottom: '8px',
+                backgroundColor: 'var(--ion-color-success-tint)',
+                borderRadius: '8px',
+                margin: '8px'
               }}>
                 <div style={{ 
                   display: 'flex', 

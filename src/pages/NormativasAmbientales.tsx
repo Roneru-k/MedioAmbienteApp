@@ -59,6 +59,7 @@ import {
 } from 'ionicons/icons';
 import { useState, useEffect } from 'react';
 import { getNormativasAmbientales } from '../utils/api';
+import { useAuthGuard } from '../utils/authUtils';
 import './Page.css';
 
 interface Normativa {
@@ -81,6 +82,8 @@ const NormativasAmbientales: React.FC = () => {
   const [selectedNormativa, setSelectedNormativa] = useState<Normativa | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+  
+  const { handleAuthError } = useAuthGuard();
 
   // Tipos de normativas disponibles
   const tiposNormativas = [
@@ -126,12 +129,12 @@ const NormativasAmbientales: React.FC = () => {
       
     } catch (error: any) {
       console.error('Error al cargar normativas:', error);
-      if (error.response?.status === 401) {
-        setError('No tienes autorización para ver las normativas. Inicia sesión nuevamente.');
+      
+      const authError = handleAuthError(error, 'No tienes autorización para ver las normativas. Inicia sesión nuevamente.');
+      
+      if (authError.isAuthError) {
+        setError(authError.message);
         setToastMsg('Error de autenticación. Redirigiendo al login...');
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 3000);
       } else {
         setError('Error al cargar las normativas. Intenta de nuevo.');
         setToastMsg('Error de conexión. Verifica tu conexión a internet.');

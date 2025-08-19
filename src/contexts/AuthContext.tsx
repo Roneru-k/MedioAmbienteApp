@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Storage } from '@ionic/storage';
+import storage from '../utils/storage';
 
 interface Usuario {
   id: string;
-  cedula: string;
   nombre: string;
   apellido: string;
   correo: string;
@@ -21,10 +20,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Inicializar storage
-const storage = new Storage();
-storage.create();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

@@ -1,7 +1,7 @@
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
-import Menu from './components/Menu';
+import SimpleMenu from './components/SimpleMenu';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -27,6 +27,9 @@ import AcercaDe from './pages/AcercaDe';
 import NormativasAmbientales from './pages/NormativasAmbientales';
 import MapaReportes from './pages/MapaReportes';
 import CambiarContraseña from './pages/CambiarContraseña';
+import AuthTest from './pages/AuthTest';
+import TestPage from './pages/TestPage';
+import SimpleHome from './pages/SimpleHome';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -57,7 +60,7 @@ const App: React.FC = () => {
         <IonReactRouter>
           <IonSplitPane contentId="main">
             {/* Menú lateral */}
-            <Menu />
+            <SimpleMenu />
 
             {/* Contenido principal */}
             <IonRouterOutlet id="main">
@@ -65,6 +68,9 @@ const App: React.FC = () => {
               <Route path="/" exact={true}>
                 <Redirect to="/home" />
               </Route>
+
+              {/* Página de prueba */}
+              <Route path="/test" exact component={TestPage} />
 
               {/* Login */}
               <Route path="/login" exact component={Login} />
@@ -76,9 +82,9 @@ const App: React.FC = () => {
               <Route path="/recuperar-contraseña" exact component={RecuperarContraseña} />
 
               {/* Home */}
-              <Route path="/home" exact component={Home} />
+              <Route path="/home" exact component={SimpleHome} />
 
-            {/* Páginas principales */}
+            {/* Páginas principales (acceso libre) */}
             <Route path="/sobre-nosotros" exact component={SobreNosotros} />
             <Route path="/servicios" exact component={Servicios} />
             <Route path="/noticias" exact component={Noticias} />
@@ -97,6 +103,9 @@ const App: React.FC = () => {
             <ProtectedRoute path="/mis-reportes" exact component={MisReportes} />
             <ProtectedRoute path="/mapa-reportes" exact component={MapaReportes} />
             <ProtectedRoute path="/cambiar-contraseña" exact component={CambiarContraseña} />
+            
+            {/* Página de prueba de autenticación */}
+            <Route path="/auth-test" exact component={AuthTest} />
 
             {/* Páginas dinámicas del folder */}
             <Route path="/folder/:name" exact component={Page} />
