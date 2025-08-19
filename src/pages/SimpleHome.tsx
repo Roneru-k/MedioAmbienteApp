@@ -23,11 +23,17 @@ import {
   checkmarkCircleOutline,
   mapOutline,
   peopleOutline,
-  logInOutline
+  logInOutline,
+  warningOutline,
+  documentTextOutline,
+  personOutline
 } from 'ionicons/icons';
+import { useAuth } from '../contexts/AuthContext';
 import './Page.css';
 
 const SimpleHome: React.FC = () => {
+  const { isAuthenticated, user } = useAuth();
+
   return (
     <IonPage>
       <IonHeader>
@@ -46,12 +52,20 @@ const SimpleHome: React.FC = () => {
           <IonCardHeader>
             <IonCardTitle style={{ color: 'white', fontSize: '1.5em' }}>
               <IonIcon icon={leafOutline} style={{ marginRight: '8px' }} />
-              Bienvenido al Ministerio de Medio Ambiente
+              {isAuthenticated && user 
+                ? `Bienvenido, ${user.nombre} ${user.apellido}`
+                : 'Bienvenido al Ministerio de Medio Ambiente'
+              }
             </IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
             <IonText style={{ color: 'white' }}>
-              <p>Promoviendo la conservación y el desarrollo sostenible en la República Dominicana.</p>
+              <p>
+                {isAuthenticated 
+                  ? 'Accede a todas las funcionalidades disponibles para usuarios registrados.'
+                  : 'Promoviendo la conservación y el desarrollo sostenible en la República Dominicana.'
+                }
+              </p>
             </IonText>
           </IonCardContent>
         </IonCard>
@@ -116,25 +130,107 @@ const SimpleHome: React.FC = () => {
               </IonCard>
             </IonCol>
             <IonCol size="6">
-              <IonCard style={{ textAlign: 'center', height: '120px' }}>
-                <IonCardContent>
-                  <IonIcon icon={logInOutline} style={{ fontSize: '2em', color: '#9C27B0', marginBottom: '8px' }} />
-                  <IonText>
-                    <p style={{ margin: '0', fontSize: '0.9em' }}>Iniciar Sesión</p>
-                  </IonText>
-                  <IonButton 
-                    fill="clear" 
-                    size="small" 
-                    routerLink="/login"
-                    style={{ marginTop: '8px' }}
-                  >
-                    Login
-                  </IonButton>
-                </IonCardContent>
-              </IonCard>
+              {isAuthenticated ? (
+                // Contenido para usuarios autenticados
+                <IonCard style={{ textAlign: 'center', height: '120px' }}>
+                  <IonCardContent>
+                    <IonIcon icon={warningOutline} style={{ fontSize: '2em', color: '#F44336', marginBottom: '8px' }} />
+                    <IonText>
+                      <p style={{ margin: '0', fontSize: '0.9em' }}>Reportar Incidente</p>
+                    </IonText>
+                    <IonButton 
+                      fill="clear" 
+                      size="small" 
+                      routerLink="/reportar"
+                      style={{ marginTop: '8px' }}
+                    >
+                      Reportar
+                    </IonButton>
+                  </IonCardContent>
+                </IonCard>
+              ) : (
+                // Contenido para usuarios no autenticados
+                <IonCard style={{ textAlign: 'center', height: '120px' }}>
+                  <IonCardContent>
+                    <IonIcon icon={logInOutline} style={{ fontSize: '2em', color: '#9C27B0', marginBottom: '8px' }} />
+                    <IonText>
+                      <p style={{ margin: '0', fontSize: '0.9em' }}>Iniciar Sesión</p>
+                    </IonText>
+                    <IonButton 
+                      fill="clear" 
+                      size="small" 
+                      routerLink="/login"
+                      style={{ marginTop: '8px' }}
+                    >
+                      Login
+                    </IonButton>
+                  </IonCardContent>
+                </IonCard>
+              )}
             </IonCol>
           </IonRow>
         </IonGrid>
+
+        {/* Funcionalidades específicas para usuarios autenticados */}
+        {isAuthenticated && (
+          <IonCard style={{ marginBottom: '20px' }}>
+            <IonCardHeader>
+              <IonCardTitle>Funcionalidades de Usuario</IonCardTitle>
+            </IonCardHeader>
+            <IonCardContent>
+              <IonGrid>
+                <IonRow>
+                  <IonCol size="6">
+                    <IonButton 
+                      expand="block" 
+                      fill="outline" 
+                      routerLink="/normativas"
+                      style={{ marginBottom: '8px' }}
+                    >
+                      <IonIcon icon={documentTextOutline} slot="start" />
+                      Normativas
+                    </IonButton>
+                  </IonCol>
+                  <IonCol size="6">
+                    <IonButton 
+                      expand="block" 
+                      fill="outline" 
+                      routerLink="/mis-reportes"
+                      style={{ marginBottom: '8px' }}
+                    >
+                      <IonIcon icon={personOutline} slot="start" />
+                      Mis Reportes
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+                <IonRow>
+                  <IonCol size="6">
+                    <IonButton 
+                      expand="block" 
+                      fill="outline" 
+                      routerLink="/mapa-reportes"
+                      style={{ marginBottom: '8px' }}
+                    >
+                      <IonIcon icon={mapOutline} slot="start" />
+                      Mapa Reportes
+                    </IonButton>
+                  </IonCol>
+                  <IonCol size="6">
+                    <IonButton 
+                      expand="block" 
+                      fill="outline" 
+                      routerLink="/cambiar-contraseña"
+                      style={{ marginBottom: '8px' }}
+                    >
+                      <IonIcon icon={personOutline} slot="start" />
+                      Cambiar Contraseña
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </IonCard>
+        )}
 
         {/* Información adicional */}
         <IonCard>
@@ -147,7 +243,16 @@ const SimpleHome: React.FC = () => {
               <p>✅ <strong>Navegación:</strong> Menú lateral funcional con todas las opciones</p>
               <p>✅ <strong>Contenido:</strong> Información ambiental, áreas protegidas, medidas</p>
               <p>✅ <strong>Voluntariado:</strong> Formulario de solicitud disponible</p>
-              <p>🔐 <strong>Requieren Login:</strong> Normativas, Reportes, Perfil de Usuario</p>
+              {isAuthenticated ? (
+                <>
+                  <p>✅ <strong>Acceso Completo:</strong> Todas las funcionalidades están disponibles</p>
+                  <p>✅ <strong>Reportes:</strong> Puedes reportar incidentes ambientales</p>
+                  <p>✅ <strong>Normativas:</strong> Acceso a normativas ambientales</p>
+                  <p>✅ <strong>Perfil:</strong> Gestiona tu información personal</p>
+                </>
+              ) : (
+                <p>🔐 <strong>Requieren Login:</strong> Normativas, Reportes, Perfil de Usuario</p>
+              )}
             </IonText>
           </IonCardContent>
         </IonCard>

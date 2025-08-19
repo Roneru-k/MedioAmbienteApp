@@ -31,7 +31,11 @@ import {
   IonImg,
   IonThumbnail,
   IonAlert,
-  IonBackButton
+  IonBackButton,
+  IonSegment,
+  IonSegmentButton,
+  IonList,
+  IonListHeader
 } from '@ionic/react';
 import {
   cameraOutline,
@@ -48,7 +52,9 @@ import {
   timeOutline,
   documentTextOutline,
   imageOutline,
-  locationSharp
+  locationSharp,
+  navigateOutline,
+  compassOutline
 } from 'ionicons/icons';
 import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -81,6 +87,9 @@ const Reportar: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertHeader, setAlertHeader] = useState('');
   const [alertButtons, setAlertButtons] = useState<string[]>(['OK']);
+  const [locationMethod, setLocationMethod] = useState<'auto' | 'manual'>('auto');
+  const [manualLat, setManualLat] = useState('');
+  const [manualLng, setManualLng] = useState('');
 
   const history = useHistory();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -147,6 +156,38 @@ const Reportar: React.FC = () => {
     } finally {
       setLocationLoading(false);
     }
+  };
+
+  // Establecer ubicación manual
+  const setManualLocation = () => {
+    const lat = parseFloat(manualLat);
+    const lng = parseFloat(manualLng);
+    
+    // Validar coordenadas
+    if (isNaN(lat) || isNaN(lng)) {
+      setLocationError('Por favor ingresa coordenadas válidas (números decimales)');
+      return;
+    }
+    
+    if (lat < -90 || lat > 90) {
+      setLocationError('La latitud debe estar entre -90 y 90 grados');
+      return;
+    }
+    
+    if (lng < -180 || lng > 180) {
+      setLocationError('La longitud debe estar entre -180 y 180 grados');
+      return;
+    }
+    
+    setFormData(prev => ({
+      ...prev,
+      latitud: lat,
+      longitud: lng
+    }));
+    
+    setToastMsg('Ubicación manual establecida exitosamente');
+    setShowLocationModal(false);
+    setLocationError('');
   };
 
   // Capturar foto
@@ -273,6 +314,16 @@ const Reportar: React.FC = () => {
   const formatCoordinates = (lat: number, lng: number) => {
     if (lat === 0 && lng === 0) return 'No obtenida';
     return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  };
+
+  // Limpiar ubicación
+  const clearLocation = () => {
+    setFormData(prev => ({
+      ...prev,
+      latitud: 0,
+      longitud: 0
+    }));
+    setToastMsg('Ubicación eliminada');
   };
 
   return (
@@ -437,7 +488,7 @@ const Reportar: React.FC = () => {
                       backgroundColor: '#f8f9fa',
                       marginBottom: '12px'
                     }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <div>
                           <p style={{ margin: '0 0 4px 0', fontSize: '0.9em', color: '#666' }}>
                             Coordenadas:
@@ -446,15 +497,41 @@ const Reportar: React.FC = () => {
                             {formatCoordinates(formData.latitud, formData.longitud)}
                           </p>
                         </div>
-                        <IonButton
-                          fill="outline"
-                          size="small"
-                          onClick={() => setShowLocationModal(true)}
-                        >
-                          <IonIcon icon={locationSharp} slot="start" />
-                          Obtener Ubicación
-                        </IonButton>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <IonButton
+                            fill="outline"
+                            size="small"
+                            onClick={() => setShowLocationModal(true)}
+                          >
+                            <IonIcon icon={locationSharp} slot="start" />
+                            {formData.latitud === 0 && formData.longitud === 0 ? 'Establecer' : 'Cambiar'}
+                          </IonButton>
+                          {(formData.latitud !== 0 || formData.longitud !== 0) && (
+                            <IonButton
+                              fill="clear"
+                              color="danger"
+                              size="small"
+                              onClick={clearLocation}
+                            >
+                              <IonIcon icon={trashOutline} />
+                            </IonButton>
+                          )}
+                        </div>
                       </div>
+                      
+                      {(formData.latitud !== 0 || formData.longitud !== 0) && (
+                        <div style={{ 
+                          backgroundColor: '#e8f5e8', 
+                          padding: '8px', 
+                          borderRadius: '4px',
+                          border: '1px solid #4CAF50'
+                        }}>
+                          <p style={{ margin: 0, fontSize: '0.8em', color: '#2e7d32' }}>
+                            <IonIcon icon={checkmarkCircleOutline} style={{ marginRight: '4px' }} />
+                            Ubicación establecida correctamente
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -515,7 +592,7 @@ const Reportar: React.FC = () => {
         <IonModal isOpen={showLocationModal} onDidDismiss={() => setShowLocationModal(false)}>
           <IonHeader>
             <IonToolbar>
-              <IonTitle>Obtener Ubicación</IonTitle>
+              <IonTitle>Establecer Ubicación</IonTitle>
               <IonButtons slot="end">
                 <IonButton onClick={() => setShowLocationModal(false)}>
                   <IonIcon icon={closeOutline} />
@@ -525,61 +602,172 @@ const Reportar: React.FC = () => {
           </IonHeader>
 
           <IonContent className="ion-padding">
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-              <IonIcon 
-                icon={locationOutline} 
-                style={{ fontSize: '64px', color: '#4CAF50', marginBottom: '20px' }} 
-              />
-              
-              <h3 style={{ margin: '0 0 12px 0', color: '#333' }}>
-                Obtener Ubicación Actual
-              </h3>
-              
-              <p style={{ margin: '0 0 24px 0', color: '#666', lineHeight: '1.5' }}>
-                Para obtener tu ubicación actual, necesitamos acceso a tu GPS. 
-                Esto nos ayudará a ubicar exactamente dónde está ocurriendo el daño ambiental.
-              </p>
+            {/* Selector de método */}
+            <IonSegment 
+              value={locationMethod} 
+              onIonChange={(e) => setLocationMethod(e.detail.value as 'auto' | 'manual')}
+              style={{ marginBottom: '20px' }}
+            >
+              <IonSegmentButton value="auto">
+                <IonIcon icon={navigateOutline} />
+                <IonLabel>Automática</IonLabel>
+              </IonSegmentButton>
+              <IonSegmentButton value="manual">
+                <IonIcon icon={compassOutline} />
+                <IonLabel>Manual</IonLabel>
+              </IonSegmentButton>
+            </IonSegment>
 
-              {locationError && (
-                <div style={{
-                  backgroundColor: '#fff3cd',
-                  border: '1px solid #ffeaa7',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  marginBottom: '20px',
-                  color: '#856404'
-                }}>
-                  <IonIcon icon={warningOutline} style={{ marginRight: '8px' }} />
-                  {locationError}
-                </div>
-              )}
+            {locationMethod === 'auto' ? (
+              /* Método automático */
+              <div style={{ textAlign: 'center', padding: '20px' }}>
+                <IonIcon 
+                  icon={locationOutline} 
+                  style={{ fontSize: '64px', color: '#4CAF50', marginBottom: '20px' }} 
+                />
+                
+                <h3 style={{ margin: '0 0 12px 0', color: '#333' }}>
+                  Obtener Ubicación Actual
+                </h3>
+                
+                <p style={{ margin: '0 0 24px 0', color: '#666', lineHeight: '1.5' }}>
+                  Para obtener tu ubicación actual, necesitamos acceso a tu GPS. 
+                  Esto nos ayudará a ubicar exactamente dónde está ocurriendo el daño ambiental.
+                </p>
 
-              <IonButton
-                expand="block"
-                onClick={getCurrentLocation}
-                disabled={locationLoading}
-                style={{ marginBottom: '12px' }}
-              >
-                {locationLoading ? (
-                  <>
-                    <IonSpinner name="crescent" slot="start" />
-                    Obteniendo ubicación...
-                  </>
-                ) : (
-                  <>
-                    <IonIcon icon={locationSharp} slot="start" />
-                    Obtener Mi Ubicación
-                  </>
+                {locationError && (
+                  <div style={{
+                    backgroundColor: '#fff3cd',
+                    border: '1px solid #ffeaa7',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginBottom: '20px',
+                    color: '#856404'
+                  }}>
+                    <IonIcon icon={warningOutline} style={{ marginRight: '8px' }} />
+                    {locationError}
+                  </div>
                 )}
-              </IonButton>
 
-              <IonButton
-                fill="clear"
-                onClick={() => setShowLocationModal(false)}
-              >
-                Cancelar
-              </IonButton>
-            </div>
+                <IonButton
+                  expand="block"
+                  onClick={getCurrentLocation}
+                  disabled={locationLoading}
+                  style={{ marginBottom: '12px' }}
+                >
+                  {locationLoading ? (
+                    <>
+                      <IonSpinner name="crescent" slot="start" />
+                      Obteniendo ubicación...
+                    </>
+                  ) : (
+                    <>
+                      <IonIcon icon={locationSharp} slot="start" />
+                      Obtener Mi Ubicación
+                    </>
+                  )}
+                </IonButton>
+              </div>
+            ) : (
+              /* Método manual */
+              <div style={{ padding: '20px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                  <IonIcon 
+                    icon={compassOutline} 
+                    style={{ fontSize: '64px', color: '#2196F3', marginBottom: '20px' }} 
+                  />
+                  
+                  <h3 style={{ margin: '0 0 12px 0', color: '#333' }}>
+                    Ingresar Coordenadas Manualmente
+                  </h3>
+                  
+                  <p style={{ margin: '0', color: '#666', lineHeight: '1.5' }}>
+                    Ingresa las coordenadas exactas donde se encuentra el daño ambiental. 
+                    Puedes obtenerlas desde Google Maps u otras aplicaciones de mapas.
+                  </p>
+                </div>
+
+                {locationError && (
+                  <div style={{
+                    backgroundColor: '#fff3cd',
+                    border: '1px solid #ffeaa7',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginBottom: '20px',
+                    color: '#856404'
+                  }}>
+                    <IonIcon icon={warningOutline} style={{ marginRight: '8px' }} />
+                    {locationError}
+                  </div>
+                )}
+
+                <IonList>
+                  <IonItem>
+                    <IonLabel position="floating">
+                      Latitud *
+                    </IonLabel>
+                    <IonInput
+                      type="number"
+                      value={manualLat}
+                      onIonChange={(e) => setManualLat(e.detail.value!)}
+                      placeholder="Ej: 18.4861"
+                      step="any"
+                    />
+                  </IonItem>
+                  
+                  <IonItem>
+                    <IonLabel position="floating">
+                      Longitud *
+                    </IonLabel>
+                    <IonInput
+                      type="number"
+                      value={manualLng}
+                      onIonChange={(e) => setManualLng(e.detail.value!)}
+                      placeholder="Ej: -69.9312"
+                      step="any"
+                    />
+                  </IonItem>
+                </IonList>
+
+                <div style={{ 
+                  backgroundColor: '#e3f2fd', 
+                  padding: '12px', 
+                  borderRadius: '8px',
+                  marginBottom: '20px',
+                  border: '1px solid #2196F3'
+                }}>
+                  <p style={{ margin: '0 0 8px 0', fontSize: '0.9em', fontWeight: '500', color: '#1976d2' }}>
+                    <IonIcon icon={informationCircleOutline} style={{ marginRight: '4px' }} />
+                    Cómo obtener coordenadas:
+                  </p>
+                  <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85em', lineHeight: '1.4', color: '#1976d2' }}>
+                    <li>Abre Google Maps en tu navegador</li>
+                    <li>Busca la ubicación del daño ambiental</li>
+                    <li>Haz clic derecho en el punto exacto</li>
+                    <li>Copia las coordenadas que aparecen</li>
+                    <li>Pega aquí separando latitud y longitud</li>
+                  </ul>
+                </div>
+
+                <IonButton
+                  expand="block"
+                  onClick={setManualLocation}
+                  disabled={!manualLat.trim() || !manualLng.trim()}
+                  style={{ marginBottom: '12px' }}
+                >
+                  <IonIcon icon={saveOutline} slot="start" />
+                  Establecer Ubicación Manual
+                </IonButton>
+              </div>
+            )}
+
+            <IonButton
+              fill="clear"
+              expand="block"
+              onClick={() => setShowLocationModal(false)}
+            >
+              Cancelar
+            </IonButton>
           </IonContent>
         </IonModal>
 

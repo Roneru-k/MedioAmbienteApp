@@ -75,9 +75,9 @@ const Login: React.FC = () => {
       
       setToastMsg('¡Inicio de sesión exitoso!');
       
-      // Redirigir al inicio después de un breve delay
+      // Redirigir al home después de un breve delay
       setTimeout(() => {
-        history.push('/');
+        history.push('/home');
       }, 1500);
       
     } catch (error: any) {
