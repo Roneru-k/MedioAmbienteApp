@@ -32,7 +32,8 @@ import {
   logInOutline,
   arrowBackOutline,
   informationCircleOutline,
-  shieldCheckmarkOutline
+  shieldCheckmarkOutline,
+  personAddOutline
 } from 'ionicons/icons';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
@@ -46,9 +47,7 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
-  const [showRecovery, setShowRecovery] = useState(false);
-  const [recoveryEmail, setRecoveryEmail] = useState('');
-  const [recoveryLoading, setRecoveryLoading] = useState(false);
+
   
   const history = useHistory();
   const { login: authLogin } = useAuth();
@@ -91,29 +90,7 @@ const Login: React.FC = () => {
     }
   };
 
-  const handlePasswordRecovery = async () => {
-    if (!recoveryEmail.trim()) {
-      setToastMsg('Por favor ingresa tu correo electrónico');
-      return;
-    }
 
-    try {
-      setRecoveryLoading(true);
-      // Aquí iría la llamada a la API de recuperación de contraseña
-      // Por ahora simulamos el proceso
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setToastMsg('Se ha enviado un enlace de recuperación a tu correo electrónico');
-      setShowRecovery(false);
-      setRecoveryEmail('');
-      
-    } catch (error: any) {
-      console.error('Error en recuperación:', error);
-      setToastMsg('Error al enviar el enlace de recuperación. Intenta de nuevo.');
-    } finally {
-      setRecoveryLoading(false);
-    }
-  };
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -187,246 +164,173 @@ const Login: React.FC = () => {
             marginLeft: 'auto',
             marginRight: 'auto'
           }}>
-            <IonCardContent style={{ padding: '32px 24px' }}>
-              
-              {!showRecovery ? (
-                <>
-                  {/* Campo de email */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <IonLabel style={{ 
-                      display: 'block',
-                      marginBottom: '8px', 
-                      fontWeight: '500',
-                      color: '#495057',
-                      fontSize: '14px'
-                    }}>
-                      <IonIcon icon={mailOutline} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                      Correo Electrónico *
-                    </IonLabel>
-                    <IonItem style={{ 
-                      '--padding-start': '16px', 
-                      '--padding-end': '16px',
-                      '--border-radius': '12px',
-                      '--background': '#f8f9fa',
-                      '--border-width': '1px',
-                      '--border-style': 'solid',
-                      '--border-color': '#e9ecef',
-                      '--min-height': '48px'
-                    }}>
-                      <IonInput
-                        type="email"
-                        value={email}
-                        onIonChange={(e) => setEmail(e.detail.value!)}
-                        placeholder="usuario@ejemplo.com"
-                        style={{ 
-                          '--padding-start': '0',
-                          '--padding-end': '0',
-                          fontSize: '16px'
-                        }}
-                      />
-                    </IonItem>
-                  </div>
-
-                  {/* Campo de contraseña */}
-                  <div style={{ marginBottom: '28px' }}>
-                    <IonLabel style={{ 
-                      display: 'block',
-                      marginBottom: '8px', 
-                      fontWeight: '500',
-                      color: '#495057',
-                      fontSize: '14px'
-                    }}>
-                      <IonIcon icon={lockClosedOutline} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                      Contraseña *
-                    </IonLabel>
-                    <IonItem style={{ 
-                      '--padding-start': '16px', 
-                      '--padding-end': '16px',
-                      '--border-radius': '12px',
-                      '--background': '#f8f9fa',
-                      '--border-width': '1px',
-                      '--border-style': 'solid',
-                      '--border-color': '#e9ecef',
-                      '--min-height': '48px'
-                    }}>
-                      <IonInput
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onIonChange={(e) => setPassword(e.detail.value!)}
-                        placeholder="Ingresa tu contraseña"
-                        style={{ 
-                          '--padding-start': '0',
-                          '--padding-end': '0',
-                          fontSize: '16px'
-                        }}
-                      />
-                      <IonButton
-                        fill="clear"
-                        slot="end"
-                        onClick={() => setShowPassword(!showPassword)}
-                        style={{ 
-                          '--padding-start': '8px', 
-                          '--padding-end': '8px',
-                          '--color': '#666'
-                        }}
-                      >
-                        <IonIcon icon={showPassword ? eyeOffOutline : eyeOutline} />
-                      </IonButton>
-                    </IonItem>
-                  </div>
-
-                  {/* Botón de login */}
-                  <IonButton
-                    expand="block"
-                    onClick={handleLogin}
-                    disabled={loading || !email.trim() || !password}
-                    style={{ 
-                      height: '52px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      '--border-radius': '12px',
-                      marginBottom: '20px',
-                      '--box-shadow': '0 4px 12px rgba(76, 175, 80, 0.3)'
-                    }}
-                  >
-                    {loading ? (
-                      <>
-                        <IonIcon icon={logInOutline} slot="start" />
-                        Iniciando Sesión...
-                      </>
-                    ) : (
-                      <>
-                        <IonIcon icon={logInOutline} slot="start" />
-                        Iniciar Sesión
-                      </>
-                    )}
-                  </IonButton>
-
-                  {/* Enlace de recuperación */}
-                  <div style={{ textAlign: 'center' }}>
-                    <IonButton
-                      fill="clear"
-                      onClick={() => setShowRecovery(true)}
+                         <IonCardContent style={{ padding: '32px 24px' }}>
+               
+               {/* Campo de email */}
+               <div style={{ marginBottom: '20px' }}>
+                 <IonLabel style={{ 
+                   display: 'block',
+                   marginBottom: '8px', 
+                   fontWeight: '500',
+                   color: '#495057',
+                   fontSize: '14px'
+                 }}>
+                   <IonIcon icon={mailOutline} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                   Correo Electrónico *
+                 </IonLabel>
+                 <IonItem style={{ 
+                   '--padding-start': '16px', 
+                   '--padding-end': '16px',
+                   '--border-radius': '12px',
+                   '--background': '#f8f9fa',
+                   '--border-width': '1px',
+                   '--border-style': 'solid',
+                   '--border-color': '#e9ecef',
+                   '--min-height': '48px'
+                 }}>
+                                       <IonInput
+                      type="email"
+                      value={email}
+                      onIonChange={(e) => setEmail(e.detail.value!)}
+                      placeholder="usuario@ejemplo.com"
                       style={{ 
-                        fontSize: '14px',
-                        '--color': '#4CAF50',
-                        fontWeight: '500',
-                        '--padding-start': '8px',
-                        '--padding-end': '8px'
+                        '--padding-start': '0',
+                        '--padding-end': '0',
+                        fontSize: '16px',
+                        '--color': '#333',
+                        '--placeholder-color': '#999'
                       }}
-                    >
-                      ¿Olvidaste tu contraseña?
-                    </IonButton>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* Formulario de recuperación */}
-                  <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                    <IonIcon 
-                      icon={informationCircleOutline} 
-                      style={{ 
-                        fontSize: '48px', 
-                        color: '#4CAF50',
-                        marginBottom: '12px'
-                      }} 
                     />
-                    <h3 style={{ 
-                      margin: '0 0 8px 0', 
-                      color: '#333',
-                      fontSize: '1.3em'
-                    }}>
-                      Recuperar Contraseña
-                    </h3>
-                    <p style={{ 
-                      margin: 0, 
-                      color: '#666',
-                      fontSize: '0.9em',
-                      lineHeight: '1.5'
-                    }}>
-                      Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
-                    </p>
-                  </div>
+                 </IonItem>
+               </div>
 
-                  <div style={{ marginBottom: '28px' }}>
-                    <IonLabel style={{ 
-                      display: 'block',
-                      marginBottom: '8px', 
-                      fontWeight: '500',
-                      color: '#495057',
-                      fontSize: '14px'
-                    }}>
-                      <IonIcon icon={mailOutline} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                      Correo Electrónico *
-                    </IonLabel>
-                    <IonItem style={{ 
-                      '--padding-start': '16px', 
-                      '--padding-end': '16px',
-                      '--border-radius': '12px',
-                      '--background': '#f8f9fa',
-                      '--border-width': '1px',
-                      '--border-style': 'solid',
-                      '--border-color': '#e9ecef',
-                      '--min-height': '48px'
-                    }}>
-                      <IonInput
-                        type="email"
-                        value={recoveryEmail}
-                        onIonChange={(e) => setRecoveryEmail(e.detail.value!)}
-                        placeholder="usuario@ejemplo.com"
-                        style={{ 
-                          '--padding-start': '0',
-                          '--padding-end': '0',
-                          fontSize: '16px'
-                        }}
-                      />
-                    </IonItem>
-                  </div>
-
-                  <IonButton
-                    expand="block"
-                    onClick={handlePasswordRecovery}
-                    disabled={recoveryLoading || !validateEmail(recoveryEmail)}
-                    style={{ 
-                      height: '52px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      '--border-radius': '12px',
-                      marginBottom: '20px',
-                      '--box-shadow': '0 4px 12px rgba(76, 175, 80, 0.3)'
-                    }}
-                  >
-                    {recoveryLoading ? (
-                      <>
-                        <IonIcon icon={mailOutline} slot="start" />
-                        Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <IonIcon icon={mailOutline} slot="start" />
-                        Enviar Enlace de Recuperación
-                      </>
-                    )}
-                  </IonButton>
-
-                  <div style={{ textAlign: 'center' }}>
-                    <IonButton
-                      fill="clear"
-                      onClick={() => setShowRecovery(false)}
+               {/* Campo de contraseña */}
+               <div style={{ marginBottom: '28px' }}>
+                 <IonLabel style={{ 
+                   display: 'block',
+                   marginBottom: '8px', 
+                   fontWeight: '500',
+                   color: '#495057',
+                   fontSize: '14px'
+                 }}>
+                   <IonIcon icon={lockClosedOutline} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                   Contraseña *
+                 </IonLabel>
+                 <IonItem style={{ 
+                   '--padding-start': '16px', 
+                   '--padding-end': '16px',
+                   '--border-radius': '12px',
+                   '--background': '#f8f9fa',
+                   '--border-width': '1px',
+                   '--border-style': 'solid',
+                   '--border-color': '#e9ecef',
+                   '--min-height': '48px'
+                 }}>
+                                       <IonInput
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onIonChange={(e) => setPassword(e.detail.value!)}
+                      placeholder="Ingresa tu contraseña"
                       style={{ 
-                        fontSize: '14px',
-                        '--color': '#666',
-                        fontWeight: '500',
-                        '--padding-start': '8px',
-                        '--padding-end': '8px'
+                        '--padding-start': '0',
+                        '--padding-end': '0',
+                        fontSize: '16px',
+                        '--color': '#333',
+                        '--placeholder-color': '#999'
                       }}
-                    >
-                      Volver al Login
-                    </IonButton>
-                  </div>
-                </>
-              )}
-            </IonCardContent>
+                    />
+                   <IonButton
+                     fill="clear"
+                     slot="end"
+                     onClick={() => setShowPassword(!showPassword)}
+                     style={{ 
+                       '--padding-start': '8px', 
+                       '--padding-end': '8px',
+                       '--color': '#666'
+                     }}
+                   >
+                     <IonIcon icon={showPassword ? eyeOffOutline : eyeOutline} />
+                   </IonButton>
+                 </IonItem>
+               </div>
+
+               {/* Botón de login */}
+               <IonButton
+                 expand="block"
+                 onClick={handleLogin}
+                 disabled={loading || !email.trim() || !password}
+                 style={{ 
+                   height: '52px',
+                   fontSize: '16px',
+                   fontWeight: '600',
+                   '--border-radius': '12px',
+                   marginBottom: '16px',
+                   '--box-shadow': '0 4px 12px rgba(76, 175, 80, 0.3)'
+                 }}
+               >
+                 {loading ? (
+                   <>
+                     <IonIcon icon={logInOutline} slot="start" />
+                     Iniciando Sesión...
+                   </>
+                 ) : (
+                   <>
+                     <IonIcon icon={logInOutline} slot="start" />
+                     Iniciar Sesión
+                   </>
+                 )}
+               </IonButton>
+
+               {/* Separador */}
+               <div style={{ 
+                 display: 'flex', 
+                 alignItems: 'center', 
+                 marginBottom: '16px',
+                 color: '#666',
+                 fontSize: '14px'
+               }}>
+                 <div style={{ flex: 1, height: '1px', backgroundColor: '#e9ecef' }}></div>
+                 <span style={{ margin: '0 12px' }}>o</span>
+                 <div style={{ flex: 1, height: '1px', backgroundColor: '#e9ecef' }}></div>
+               </div>
+
+               {/* Botón de registro */}
+               <IonButton
+                 expand="block"
+                 fill="outline"
+                 onClick={() => history.push('/register')}
+                 style={{ 
+                   height: '52px',
+                   fontSize: '16px',
+                   fontWeight: '600',
+                   '--border-radius': '12px',
+                   marginBottom: '20px',
+                   '--border-width': '2px',
+                   '--border-color': '#4CAF50',
+                   '--color': '#4CAF50'
+                 }}
+               >
+                 <IonIcon icon={personAddOutline} slot="start" />
+                 Crear Cuenta
+               </IonButton>
+
+               {/* Enlace de recuperación */}
+               <div style={{ textAlign: 'center' }}>
+                 <IonButton
+                   fill="clear"
+                   onClick={() => history.push('/recuperar-contraseña')}
+                   style={{ 
+                     fontSize: '14px',
+                     '--color': '#4CAF50',
+                     fontWeight: '500',
+                     '--padding-start': '8px',
+                     '--padding-end': '8px'
+                   }}
+                 >
+                   ¿Olvidaste tu contraseña?
+                 </IonButton>
+               </div>
+             </IonCardContent>
           </IonCard>
 
           {/* Información adicional */}
@@ -454,7 +358,7 @@ const Login: React.FC = () => {
           </div>
         </div>
 
-        <IonLoading isOpen={loading || recoveryLoading} message="Procesando..." />
+        <IonLoading isOpen={loading} message="Procesando..." />
         <IonToast
           isOpen={!!toastMsg}
           message={toastMsg}

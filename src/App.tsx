@@ -8,6 +8,8 @@ import { AuthProvider } from './contexts/AuthContext';
 /* Páginas */
 import Page from './pages/Page';
 import Login from './pages/Login';
+import Register from './pages/Register';
+import RecuperarContraseña from './pages/RecuperarContraseña';
 import Home from './pages/Home';
 import Noticias from './pages/Noticias';
 import Servicios from './pages/Servicios';
@@ -66,6 +68,12 @@ const App: React.FC = () => {
 
               {/* Login */}
               <Route path="/login" exact component={Login} />
+
+              {/* Register */}
+              <Route path="/register" exact component={Register} />
+
+              {/* Recuperar Contraseña */}
+              <Route path="/recuperar-contraseña" exact component={RecuperarContraseña} />
 
               {/* Home */}
               <Route path="/home" exact component={Home} />

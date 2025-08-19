@@ -59,7 +59,7 @@ export const getNormativasAmbientales = (tipo?: string, busqueda?: string) => {
 };
 
 export const recuperarContraseña = (data: { correo: string }) => 
-  api.post('auth/recuperar-password', data);
+  api.post('auth/recover', data);
 
 export const cambiarContraseña = (data: { 
   correo: string;
@@ -128,7 +128,13 @@ export const updatePerfil = (data: {
   nombre: string;
   apellido: string;
   telefono: string;
-}) => api.put('perfil', data);
+}) => api.put('usuarios', data);
+
+export const cambiarContraseñaUsuario = (data: {
+  password_actual: string;
+  nueva_password: string;
+  confirmar_password: string;
+}) => api.put('usuarios', data);
 
 // ===== FUNCIONES AUXILIARES =====
 export const getGeolocation = (): Promise<{ lat: number; lng: number }> => {

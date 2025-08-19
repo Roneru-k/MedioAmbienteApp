@@ -16,6 +16,7 @@ interface AuthContextType {
   token: string | null;
   login: (token: string, user: Usuario) => void;
   logout: () => void;
+  updateUser: (updatedUser: Usuario) => void;
   loading: boolean;
 }
 
@@ -92,12 +93,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUser = async (updatedUser: Usuario) => {
+    try {
+      await storage.set('user', updatedUser);
+      setUser(updatedUser);
+    } catch (error) {
+      console.error('Error al actualizar usuario:', error);
+    }
+  };
+
   const value: AuthContextType = {
     isAuthenticated,
     user,
     token,
     login,
     logout,
+    updateUser,
     loading
   };
 
