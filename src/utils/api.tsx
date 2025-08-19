@@ -47,8 +47,16 @@ export const register = (data: {
   matricula: string;
 }) => api.post('auth/register', data);
 
-export const login = (data: { correo: string; password: string }) => 
+export const login = (data: { correo: string; password: string }) =>
   api.post('auth/login', data);
+
+// Normativas Ambientales
+export const getNormativasAmbientales = (tipo?: string, busqueda?: string) => {
+  const params: any = {};
+  if (tipo) params.tipo = tipo;
+  if (busqueda) params.busqueda = busqueda;
+  return api.get('normativas', { params });
+};
 
 export const recuperarContraseña = (data: { correo: string }) => 
   api.post('auth/recuperar-password', data);
