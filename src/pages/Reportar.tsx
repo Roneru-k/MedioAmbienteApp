@@ -174,6 +174,13 @@ const Reportar: React.FC = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
+        
+        // Validar que el base64 no sea demasiado grande (aproximadamente 7MB en base64)
+        if (result.length > 7 * 1024 * 1024) {
+          setToastMsg('La imagen es demasiado grande. Usa una imagen más pequeña.');
+          return;
+        }
+        
         setFormData(prev => ({
           ...prev,
           foto: result
@@ -210,33 +217,53 @@ const Reportar: React.FC = () => {
         longitud: formData.longitud
       };
 
-      await reportarDaño(reporteData);
+      const response = await reportarDaño(reporteData);
       
-      setToastMsg('¡Reporte enviado exitosamente! El Ministerio revisará tu denuncia.');
-      
-      // Limpiar formulario
-      setFormData({
-        titulo: '',
-        descripcion: '',
-        foto: '',
-        latitud: 0,
-        longitud: 0
-      });
-      
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+      // Verificar si la respuesta es exitosa (201 Created)
+      if (response.status === 201) {
+        setToastMsg('¡Reporte enviado exitosamente! El Ministerio revisará tu denuncia.');
+        
+        // Limpiar formulario
+        setFormData({
+          titulo: '',
+          descripcion: '',
+          foto: '',
+          latitud: 0,
+          longitud: 0
+        });
+        
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
 
-      // Redirigir a mis reportes después de un delay
-      setTimeout(() => {
-        history.push('/mis-reportes');
-      }, 2000);
+        // Redirigir a mis reportes después de un delay
+        setTimeout(() => {
+          history.push('/mis-reportes');
+        }, 2000);
+      } else {
+        setToastMsg('Reporte enviado, pero hubo un problema con la confirmación.');
+      }
 
     } catch (error: any) {
       console.error('Error al enviar reporte:', error);
-      setToastMsg(
-        error.response?.data?.error || 'Error al enviar el reporte. Intenta de nuevo.'
-      );
+      
+      // Manejar diferentes tipos de errores
+      if (error.response?.status === 401) {
+        setToastMsg('Sesión expirada. Por favor inicia sesión nuevamente.');
+        setTimeout(() => {
+          history.push('/login');
+        }, 2000);
+      } else if (error.response?.status === 400) {
+        setToastMsg('Datos inválidos. Verifica la información del reporte.');
+      } else if (error.response?.status === 413) {
+        setToastMsg('La imagen es demasiado grande. Usa una imagen más pequeña.');
+      } else if (error.response?.data?.error) {
+        setToastMsg(error.response.data.error);
+      } else if (error.message === 'Network Error') {
+        setToastMsg('Error de conexión. Verifica tu conexión a internet.');
+      } else {
+        setToastMsg('Error al enviar el reporte. Intenta de nuevo.');
+      }
     } finally {
       setLoading(false);
     }
@@ -435,7 +462,7 @@ const Reportar: React.FC = () => {
                   <IonButton
                     expand="block"
                     onClick={handleSubmit}
-                    disabled={loading}
+                    disabled={loading || !formData.titulo.trim() || !formData.descripcion.trim() || !formData.foto || (formData.latitud === 0 && formData.longitud === 0)}
                     style={{
                       height: '52px',
                       fontSize: '16px',
@@ -456,6 +483,28 @@ const Reportar: React.FC = () => {
                       </>
                     )}
                   </IonButton>
+                  
+                  {/* Información adicional */}
+                  <div style={{ 
+                    marginTop: '16px', 
+                    padding: '12px', 
+                    backgroundColor: '#f8f9fa', 
+                    borderRadius: '8px',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <IonText color="medium">
+                      <p style={{ margin: '0 0 8px 0', fontSize: '0.9em', fontWeight: '500' }}>
+                        <IonIcon icon={informationCircleOutline} style={{ marginRight: '4px' }} />
+                        Información del envío:
+                      </p>
+                      <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85em', lineHeight: '1.4' }}>
+                        <li>Tu reporte será revisado por el Ministerio</li>
+                        <li>Recibirás notificaciones sobre el estado</li>
+                        <li>La información es confidencial</li>
+                        <li>Puedes ver el progreso en "Mis Reportes"</li>
+                      </ul>
+                    </IonText>
+                  </div>
                 </IonCol>
               </IonRow>
             </IonGrid>
