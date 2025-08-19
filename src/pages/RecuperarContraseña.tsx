@@ -35,7 +35,8 @@ import {
   informationCircleOutline,
   lockClosedOutline,
   shieldCheckmarkOutline,
-  refreshOutline
+  refreshOutline,
+  copyOutline
 } from 'ionicons/icons';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -65,6 +66,7 @@ const RecuperarContraseña: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [codigoEnviado, setCodigoEnviado] = useState(false);
+  const [codigoRecibido, setCodigoRecibido] = useState('');
 
   const history = useHistory();
 
@@ -106,7 +108,8 @@ const RecuperarContraseña: React.FC = () => {
       if (response.status === 200) {
         const { mensaje, codigo } = response.data;
         
-        setToastMsg(`Código enviado exitosamente: ${codigo}`);
+        setCodigoRecibido(codigo);
+        setToastMsg('Código enviado exitosamente');
         setCodigoEnviado(true);
         setCurrentStep(2);
       }
@@ -212,7 +215,8 @@ const RecuperarContraseña: React.FC = () => {
 
       if (response.status === 200) {
         const { codigo } = response.data;
-        setToastMsg(`Nuevo código enviado: ${codigo}`);
+        setCodigoRecibido(codigo);
+        setToastMsg('Nuevo código enviado exitosamente');
       }
       
     } catch (error: any) {
@@ -220,6 +224,17 @@ const RecuperarContraseña: React.FC = () => {
       setToastMsg('Error al reenviar el código. Intenta de nuevo.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Copiar código al portapapeles
+  const copiarCodigo = async () => {
+    try {
+      await navigator.clipboard.writeText(codigoRecibido);
+      setToastMsg('Código copiado al portapapeles');
+    } catch (error) {
+      console.error('Error al copiar código:', error);
+      setToastMsg('No se pudo copiar el código automáticamente');
     }
   };
 
@@ -530,6 +545,53 @@ const RecuperarContraseña: React.FC = () => {
                   
                   <IonRow>
                     <IonCol size="12">
+                      <div style={{ 
+                        backgroundColor: '#e8f5e8', 
+                        padding: '12px', 
+                        borderRadius: '8px',
+                        marginBottom: '16px',
+                        border: '1px solid #4CAF50'
+                      }}>
+                        <p style={{ margin: '0', fontSize: '0.9em', color: '#2e7d32' }}>
+                          <IonIcon icon={checkmarkCircleOutline} style={{ marginRight: '4px' }} />
+                          <strong>Paso 2:</strong> Se ha generado un código de verificación para <strong>{formData.correo}</strong>. 
+                          Copia el código y pégalo en el campo de abajo:
+                        </p>
+                      </div>
+                      
+                      <div style={{ 
+                        fontSize: '24px', 
+                        fontWeight: 'bold', 
+                        color: '#856404',
+                        letterSpacing: '4px', 
+                        fontFamily: 'monospace',
+                        backgroundColor: '#fff',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        border: '2px dashed #ffc107',
+                        position: 'relative',
+                        textAlign: 'center',
+                        marginBottom: '16px'
+                      }}>
+                        {codigoRecibido}
+                        <IonButton
+                          fill="clear"
+                          size="small"
+                          onClick={copiarCodigo}
+                          style={{
+                            position: 'absolute',
+                            top: '4px',
+                            right: '4px',
+                            '--padding-start': '4px',
+                            '--padding-end': '4px',
+                            minHeight: '24px',
+                            height: '24px'
+                          }}
+                        >
+                          <IonIcon icon={copyOutline} style={{ fontSize: '16px' }} />
+                        </IonButton>
+                      </div>
+                      
                       <IonItem style={{ marginBottom: '16px', '--padding-start': '0', '--padding-end': '0' }}>
                         <IonLabel position="floating" style={{ marginBottom: '8px', fontWeight: '500' }}>
                           <IonIcon icon={keyOutline} style={{ marginRight: '4px' }} />
@@ -538,7 +600,7 @@ const RecuperarContraseña: React.FC = () => {
                         <IonInput
                           value={formData.codigo}
                           onIonChange={(e) => setFormData(prev => ({ ...prev, codigo: e.detail.value! }))}
-                          placeholder="Ingresa el código"
+                          placeholder="Pega el código aquí"
                           maxlength={10}
                           style={{ marginTop: '4px' }}
                         />
