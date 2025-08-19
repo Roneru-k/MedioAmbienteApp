@@ -13,6 +13,7 @@ import Voluntariado from './pages/Voluntariado';
 import Reportar from './pages/Reportar';
 import MisReportes from './pages/MisReportes';
 import AreasProtegidas from './pages/AreasProtegidas';
+import MapaAreasProtegidas from './pages/MapaAreasProtegidas';
 import Mapa from './pages/Mapa';
 import SobreNosotros from './pages/SobreNosotros';
 import VideosEducativos from './pages/VideosEducativos';
@@ -72,6 +73,7 @@ const App: React.FC = () => {
             <Route path="/noticias" exact component={Noticias} />
             <Route path="/videos-educativos" exact component={VideosEducativos} />
             <Route path="/areas-protegidas" exact component={AreasProtegidas} />
+            <Route path="/mapa-areas-protegidas" exact component={MapaAreasProtegidas} />
             <Route path="/mapa" exact component={Mapa} />
             <Route path="/medidas-ambientales" exact component={MedidasAmbientales} />
             <Route path="/equipo-ministerio" exact component={EquipoMinisterio} />

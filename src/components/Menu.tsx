@@ -48,7 +48,7 @@ const appPages: AppPage[] = [
   { title: 'Noticias Ambientales', url: '/noticias', iosIcon: newspaperOutline, mdIcon: newspaperOutline, section: 'main' },
   { title: 'Videos Educativos', url: '/videos-educativos', iosIcon: playCircleOutline, mdIcon: playCircleOutline, section: 'main' },
   { title: 'Áreas Protegidas', url: '/areas-protegidas', iosIcon: mapOutline, mdIcon: mapOutline, section: 'main' },
-  { title: 'Mapa de Áreas', url: '/mapa', iosIcon: mapOutline, mdIcon: mapOutline, section: 'main' },
+  { title: 'Mapa de Áreas Protegidas', url: '/mapa-areas-protegidas', iosIcon: mapOutline, mdIcon: mapOutline, section: 'main' },
   { title: 'Medidas Ambientales', url: '/medidas-ambientales', iosIcon: leafOutline, mdIcon: leafOutline, section: 'main' },
   { title: 'Equipo del Ministerio', url: '/equipo-ministerio', iosIcon: personOutline, mdIcon: personOutline, section: 'main' },
   { title: 'Voluntariado', url: '/voluntariado', iosIcon: peopleOutline, mdIcon: peopleOutline, section: 'main' },
