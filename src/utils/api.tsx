@@ -79,7 +79,7 @@ export const getAreasProtegidas = (tipo?: string, busqueda?: string) => {
 
 export const getMedidasAmbientales = (categoria?: string) => {
   const params = categoria ? { categoria } : {};
-  return api.get('medidas-ambientales', { params });
+  return api.get('medidas', { params });
 };
 
 export const getEquipoMinisterio = (departamento?: string) => {
