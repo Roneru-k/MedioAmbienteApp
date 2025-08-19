@@ -21,8 +21,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { useHistory } from 'react-router-dom';
-import storage from '../utils/storage';
-import { useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import {
   leafOutline,
   waterOutline,
@@ -32,11 +31,12 @@ import {
   warningOutline,
   mapOutline,
   newspaperOutline,
+  logInOutline,
 } from 'ionicons/icons';
 
 const Home: React.FC = () => {
   const history = useHistory();
-  const [userName, setUserName] = useState<string | null>('');
+  const { isAuthenticated, user } = useAuth();
 
   // Configuración del slider
   const slideOpts = {
@@ -104,23 +104,7 @@ const Home: React.FC = () => {
     { title: 'Voluntariado', icon: peopleOutline, color: 'warning', url: '/voluntariado' },
   ];
 
-  useEffect(() => {
-    // Obtener usuario del storage
-    const loadUser = async () => {
-      const user = await storage.get('user');
-      if (!user) {
-        history.push('/login'); // si no hay usuario, ir al login
-      } else {
-        setUserName(user.nombre || user.correo || 'Usuario');
-      }
-    };
-    loadUser();
-  }, [history]);
-
-  const handleLogout = async () => {
-    await storage.clear(); // limpiar storage
-    history.push('/login');   // redirigir al login
-  };
+  const userName = user?.nombre || user?.correo || 'Usuario';
 
   return (
     <IonPage>
@@ -173,7 +157,8 @@ const Home: React.FC = () => {
         <IonCard style={{ margin: '20px' }}>
           <IonCardHeader>
             <IonCardTitle>
-              <IonIcon icon={heartOutline} /> ¡Hola, {userName}!
+              <IonIcon icon={heartOutline} /> 
+              {isAuthenticated ? `¡Hola, ${userName}!` : '¡Bienvenido!'}
             </IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
@@ -182,9 +167,15 @@ const Home: React.FC = () => {
               Aquí encontrarás toda la información y herramientas necesarias para contribuir a la protección 
               de nuestro medio ambiente.
             </p>
-            <p>
-              <strong>¡Tu participación es fundamental para crear un futuro más sostenible!</strong>
-            </p>
+            {isAuthenticated ? (
+              <p>
+                <strong>¡Tu participación es fundamental para crear un futuro más sostenible!</strong>
+              </p>
+            ) : (
+              <p>
+                <strong>Inicia sesión para acceder a todas las funciones y reportar daños ambientales.</strong>
+              </p>
+            )}
           </IonCardContent>
         </IonCard>
 
@@ -262,11 +253,27 @@ const Home: React.FC = () => {
           </IonCardContent>
         </IonCard>
 
-        {/* Botón de cerrar sesión */}
+        {/* Acciones de autenticación */}
         <div style={{ padding: '20px' }}>
-          <IonButton expand="block" color="danger" onClick={handleLogout}>
-            Cerrar Sesión
-          </IonButton>
+          {isAuthenticated ? (
+            <IonButton 
+              expand="block" 
+              color="success"
+              onClick={() => history.push('/voluntariado')}
+            >
+              <IonIcon icon={peopleOutline} slot="start" />
+              Únete al Voluntariado
+            </IonButton>
+          ) : (
+            <IonButton 
+              expand="block" 
+              color="primary"
+              onClick={() => history.push('/login')}
+            >
+              <IonIcon icon={logInOutline} slot="start" />
+              Iniciar Sesión
+            </IonButton>
+          )}
         </div>
       </IonContent>
     </IonPage>

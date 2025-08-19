@@ -2,6 +2,8 @@ import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/r
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import Menu from './components/Menu';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './contexts/AuthContext';
 
 /* Páginas */
 import Page from './pages/Page';
@@ -49,23 +51,24 @@ setupIonicReact();
 const App: React.FC = () => {
   return (
     <IonApp>
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          {/* Menú lateral */}
-          <Menu />
+      <AuthProvider>
+        <IonReactRouter>
+          <IonSplitPane contentId="main">
+            {/* Menú lateral */}
+            <Menu />
 
-          {/* Contenido principal */}
-          <IonRouterOutlet id="main">
-            {/* Ruta por defecto */}
-            <Route path="/" exact={true}>
-              <Redirect to="/login" />
-            </Route>
+            {/* Contenido principal */}
+            <IonRouterOutlet id="main">
+              {/* Ruta por defecto */}
+              <Route path="/" exact={true}>
+                <Redirect to="/home" />
+              </Route>
 
-            {/* Login */}
-            <Route path="/login" exact component={Login} />
+              {/* Login */}
+              <Route path="/login" exact component={Login} />
 
-            {/* Home */}
-            <Route path="/home" exact component={Home} />
+              {/* Home */}
+              <Route path="/home" exact component={Home} />
 
             {/* Páginas principales */}
             <Route path="/sobre-nosotros" exact component={SobreNosotros} />
@@ -81,17 +84,18 @@ const App: React.FC = () => {
             <Route path="/acerca-de" exact component={AcercaDe} />
 
             {/* Páginas de usuario (requieren login) */}
-            <Route path="/normativas" exact component={NormativasAmbientales} />
-            <Route path="/reportar" exact component={Reportar} />
-            <Route path="/mis-reportes" exact component={MisReportes} />
-            <Route path="/mapa-reportes" exact component={MapaReportes} />
-            <Route path="/cambiar-contraseña" exact component={CambiarContraseña} />
+            <ProtectedRoute path="/normativas" exact component={NormativasAmbientales} />
+            <ProtectedRoute path="/reportar" exact component={Reportar} />
+            <ProtectedRoute path="/mis-reportes" exact component={MisReportes} />
+            <ProtectedRoute path="/mapa-reportes" exact component={MapaReportes} />
+            <ProtectedRoute path="/cambiar-contraseña" exact component={CambiarContraseña} />
 
             {/* Páginas dinámicas del folder */}
             <Route path="/folder/:name" exact component={Page} />
           </IonRouterOutlet>
         </IonSplitPane>
-      </IonReactRouter>
+        </IonReactRouter>
+      </AuthProvider>
     </IonApp>
   );
 };
