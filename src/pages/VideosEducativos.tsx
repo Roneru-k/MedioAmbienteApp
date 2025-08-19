@@ -73,15 +73,34 @@ const VideosEducativos: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    filterVideos();
-  }, [searchTerm, selectedCategoria, videos]);
+    if (selectedCategoria) {
+      // Si se selecciona una categoría, cargar desde la API
+      loadVideos(selectedCategoria);
+    } else {
+      // Si no hay categoría seleccionada, filtrar localmente
+      filterVideos();
+    }
+  }, [selectedCategoria]);
 
-  const loadVideos = async () => {
+  useEffect(() => {
+    // Filtrar por búsqueda solo cuando no hay categoría seleccionada
+    if (!selectedCategoria) {
+      filterVideos();
+    }
+  }, [searchTerm, videos]);
+
+  const loadVideos = async (categoria?: string) => {
     try {
       setLoading(true);
-      const response = await getVideosEducativos();
-      setVideos(response.data);
-      setFilteredVideos(response.data);
+      const response = await getVideosEducativos(categoria);
+      if (categoria) {
+        // Si se está filtrando por categoría, actualizar solo los videos filtrados
+        setFilteredVideos(response.data);
+      } else {
+        // Si se cargan todos los videos, actualizar ambos estados
+        setVideos(response.data);
+        setFilteredVideos(response.data);
+      }
       setError('');
     } catch (err: any) {
       console.error('Error cargando videos:', err);
@@ -127,6 +146,86 @@ const VideosEducativos: React.FC = () => {
           categoria: "biodiversidad",
           duracion: "22:00",
           fecha_creacion: "2025-01-12 14:20:00"
+        },
+        {
+          id: "000005",
+          titulo: "Compostaje doméstico paso a paso",
+          descripcion: "Aprende a crear tu propio compost en casa para reducir residuos orgánicos.",
+          url: "https://www.youtube.com/watch?v=example5",
+          thumbnail: "https://via.placeholder.com/400x200/8BC34A/FFFFFF?text=Compostaje",
+          categoria: "reciclaje",
+          duracion: "15:20",
+          fecha_creacion: "2025-01-11 16:45:00"
+        },
+        {
+          id: "000006",
+          titulo: "Protección de tortugas marinas",
+          descripcion: "Conoce los esfuerzos para proteger las tortugas marinas en las costas dominicanas.",
+          url: "https://www.youtube.com/watch?v=example6",
+          thumbnail: "https://via.placeholder.com/400x200/2196F3/FFFFFF?text=Tortugas",
+          categoria: "conservacion",
+          duracion: "20:10",
+          fecha_creacion: "2025-01-10 11:30:00"
+        },
+        {
+          id: "000007",
+          titulo: "Energías renovables en República Dominicana",
+          descripcion: "Descubre el potencial de las energías renovables en nuestro país.",
+          url: "https://www.youtube.com/watch?v=example7",
+          thumbnail: "https://via.placeholder.com/400x200/FF9800/FFFFFF?text=Energías",
+          categoria: "cambio_climatico",
+          duracion: "28:45",
+          fecha_creacion: "2025-01-09 14:15:00"
+        },
+        {
+          id: "000008",
+          titulo: "Flora endémica de la isla Hispaniola",
+          descripcion: "Explora las plantas únicas que solo existen en nuestra isla.",
+          url: "https://www.youtube.com/watch?v=example8",
+          thumbnail: "https://via.placeholder.com/400x200/4CAF50/FFFFFF?text=Flora",
+          categoria: "biodiversidad",
+          duracion: "19:30",
+          fecha_creacion: "2025-01-08 09:00:00"
+        },
+        {
+          id: "000009",
+          titulo: "Separación de residuos plásticos",
+          descripcion: "Guía completa para identificar y separar correctamente los plásticos reciclables.",
+          url: "https://www.youtube.com/watch?v=example9",
+          thumbnail: "https://via.placeholder.com/400x200/00BCD4/FFFFFF?text=Plásticos",
+          categoria: "reciclaje",
+          duracion: "14:25",
+          fecha_creacion: "2025-01-07 13:20:00"
+        },
+        {
+          id: "000010",
+          titulo: "Restauración de manglares",
+          descripcion: "Proyectos de restauración de manglares en las costas dominicanas.",
+          url: "https://www.youtube.com/watch?v=example10",
+          thumbnail: "https://via.placeholder.com/400x200/795548/FFFFFF?text=Manglares",
+          categoria: "conservacion",
+          duracion: "23:15",
+          fecha_creacion: "2025-01-06 10:45:00"
+        },
+        {
+          id: "000011",
+          titulo: "Adaptación al cambio climático",
+          descripcion: "Estrategias para adaptarse a los efectos del cambio climático en RD.",
+          url: "https://www.youtube.com/watch?v=example11",
+          thumbnail: "https://via.placeholder.com/400x200/607D8B/FFFFFF?text=Adaptación",
+          categoria: "cambio_climatico",
+          duracion: "31:20",
+          fecha_creacion: "2025-01-05 15:30:00"
+        },
+        {
+          id: "000012",
+          titulo: "Aves endémicas de República Dominicana",
+          descripcion: "Conoce las aves que solo habitan en nuestro territorio.",
+          url: "https://www.youtube.com/watch?v=example12",
+          thumbnail: "https://via.placeholder.com/400x200/9C27B0/FFFFFF?text=Aves",
+          categoria: "biodiversidad",
+          duracion: "26:40",
+          fecha_creacion: "2025-01-04 12:00:00"
         }
       ];
       
@@ -141,20 +240,22 @@ const VideosEducativos: React.FC = () => {
   const filterVideos = () => {
     let filtered = videos;
 
-    // Filtrar por categoría
-    if (selectedCategoria) {
-      filtered = filtered.filter(video => video.categoria === selectedCategoria);
-    }
-
     // Filtrar por búsqueda
     if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
       filtered = filtered.filter(video =>
-        video.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        video.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
+        video.titulo.toLowerCase().includes(searchLower) ||
+        video.descripcion.toLowerCase().includes(searchLower) ||
+        video.categoria.toLowerCase().includes(searchLower)
       );
     }
 
     setFilteredVideos(filtered);
+  };
+
+  const handleCategoriaChange = (categoria: string) => {
+    setSelectedCategoria(categoria);
+    setSearchTerm(''); // Limpiar búsqueda al cambiar categoría
   };
 
   const formatDate = (dateString: string) => {
@@ -213,17 +314,54 @@ const VideosEducativos: React.FC = () => {
         />
 
         {/* Filtro por categorías */}
-        <IonSegment
-          value={selectedCategoria}
-          onIonChange={(e) => setSelectedCategoria(e.detail.value as string)}
-          scrollable={true}
-        >
-          {categorias.map((categoria) => (
-            <IonSegmentButton key={categoria.value} value={categoria.value}>
-              <IonLabel>{categoria.label}</IonLabel>
-            </IonSegmentButton>
-          ))}
-        </IonSegment>
+        <div style={{ padding: '10px 0' }}>
+                     <IonSegment
+             value={selectedCategoria}
+             onIonChange={(e) => handleCategoriaChange(e.detail.value as string)}
+             scrollable={true}
+           >
+            {categorias.map((categoria) => (
+              <IonSegmentButton key={categoria.value} value={categoria.value}>
+                <IonLabel>{categoria.label}</IonLabel>
+              </IonSegmentButton>
+            ))}
+          </IonSegment>
+          
+          {/* Contador de resultados */}
+          {!loading && !error && (
+            <div style={{ 
+              padding: '10px 16px', 
+              fontSize: '0.9em', 
+              color: '#666',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <span>
+                {filteredVideos.length} video{filteredVideos.length !== 1 ? 's' : ''} encontrado{filteredVideos.length !== 1 ? 's' : ''}
+                {selectedCategoria && (
+                  <span> en <strong>{getCategoriaLabel(selectedCategoria)}</strong></span>
+                )}
+                {searchTerm && (
+                  <span> para "<strong>{searchTerm}</strong>"</span>
+                )}
+              </span>
+                             {(selectedCategoria || searchTerm) && (
+                 <IonButton 
+                   fill="clear" 
+                   size="small"
+                   onClick={() => {
+                     setSelectedCategoria('');
+                     setSearchTerm('');
+                     loadVideos(); // Recargar todos los videos
+                   }}
+                 >
+                   Limpiar filtros
+                 </IonButton>
+               )}
+            </div>
+          )}
+        </div>
 
         {/* Estado de carga */}
         {loading && (
@@ -239,11 +377,11 @@ const VideosEducativos: React.FC = () => {
             <IonCardContent>
               <IonText color="light">
                 <p>{error}</p>
-                {!error.includes('demostración') && (
-                  <IonButton fill="outline" color="light" onClick={loadVideos}>
-                    Reintentar
-                  </IonButton>
-                )}
+                                 {!error.includes('demostración') && (
+                   <IonButton fill="outline" color="light" onClick={() => loadVideos()}>
+                     Reintentar
+                   </IonButton>
+                 )}
               </IonText>
             </IonCardContent>
           </IonCard>
@@ -314,7 +452,28 @@ const VideosEducativos: React.FC = () => {
             <IonCardContent>
               <div style={{ textAlign: 'center', padding: '20px' }}>
                 <IonIcon icon={searchOutline} size="large" style={{ color: '#ccc' }} />
-                <p>No se encontraron videos con los criterios de búsqueda</p>
+                <h3 style={{ color: '#666', marginBottom: '10px' }}>No se encontraron videos</h3>
+                <p style={{ color: '#888', marginBottom: '15px' }}>
+                  {searchTerm && selectedCategoria 
+                    ? `No hay videos de "${selectedCategoria}" que coincidan con "${searchTerm}"`
+                    : searchTerm 
+                    ? `No hay videos que coincidan con "${searchTerm}"`
+                    : selectedCategoria 
+                    ? `No hay videos en la categoría "${selectedCategoria}"`
+                    : 'No hay videos disponibles'
+                  }
+                </p>
+                                 <IonButton 
+                   fill="outline" 
+                   size="small"
+                   onClick={() => {
+                     setSelectedCategoria('');
+                     setSearchTerm('');
+                     loadVideos(); // Recargar todos los videos
+                   }}
+                 >
+                   Ver todos los videos
+                 </IonButton>
               </div>
             </IonCardContent>
           </IonCard>
