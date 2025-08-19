@@ -45,7 +45,6 @@ interface Desarrollador {
   matricula: string;
   telefono: string;
   telegram: string;
-  foto: string;
   rol: string;
   descripcion: string;
   habilidades: string[];
@@ -58,75 +57,57 @@ const AcercaDe: React.FC = () => {
   const [toastMsg, setToastMsg] = useState('');
 
   const equipo: Desarrollador[] = [
-    {
-      id: 1,
-      nombre: "Carlos Manuel Rodríguez",
-      matricula: "2021-1234",
-      telefono: "+1 (809) 555-0101",
-      telegram: "carlosrodriguez_dev",
-      foto: "https://via.placeholder.com/150/4CAF50/FFFFFF?text=CM",
-      rol: "Desarrollador Full Stack & Líder de Proyecto",
-      descripcion: "Estudiante de Desarrollo de Software con especialización en aplicaciones móviles. Apasionado por la tecnología y el medio ambiente.",
-      habilidades: ["React Native", "TypeScript", "Ionic", "Node.js", "Git"],
-      github: "https://github.com/carlosrodriguez",
-      linkedin: "https://linkedin.com/in/carlosrodriguez",
-      email: "carlos.rodriguez@itla.edu.do"
+         {
+       id: 1,
+       nombre: "Keydel Moya",
+       matricula: "2023-1064",
+       telefono: "+1 (809) 555-0101",
+       telegram: "keydelmoya_dev",
+       rol: "Desarrollador Full Stack & Líder de Proyecto",
+      descripcion: "Estudiante de Desarrollo de Software con especialización en aplicaciones móviles. Responsable de la arquitectura general del proyecto y coordinación del equipo.",
+      habilidades: ["React Native", "TypeScript", "Ionic", "Node.js", "Git", "Liderazgo"],
+      github: "https://github.com/keydelmoya",
+      linkedin: "https://linkedin.com/in/keydelmoya",
+      email: "keydel.moya@itla.edu.do"
     },
-    {
-      id: 2,
-      nombre: "Ana Sofía Martínez",
-      matricula: "2021-5678",
-      telefono: "+1 (809) 555-0102",
-      telegram: "anasofia_ui",
-      foto: "https://via.placeholder.com/150/2196F3/FFFFFF?text=AS",
-      rol: "Diseñadora UX/UI & Frontend",
-      descripcion: "Estudiante de Diseño de Software con enfoque en experiencia de usuario y diseño de interfaces intuitivas.",
-      habilidades: ["Figma", "React", "CSS3", "Prototipado", "Diseño Responsivo"],
-      github: "https://github.com/anasofia",
-      linkedin: "https://linkedin.com/in/anasofia",
-      email: "ana.martinez@itla.edu.do"
+         {
+       id: 2,
+       nombre: "Sander Rafaél Fernández Tolentino",
+       matricula: "2023-1001",
+       telefono: "+1 (809) 555-0102",
+       telegram: "sanderfernandez_ui",
+       rol: "Diseñador UX/UI & Frontend Developer",
+      descripcion: "Estudiante de Desarrollo de Software con enfoque en experiencia de usuario y diseño de interfaces intuitivas. Especializado en React e Ionic.",
+      habilidades: ["React", "Ionic", "TypeScript", "CSS3", "UX/UI Design", "Figma"],
+      github: "https://github.com/sanderfernandez",
+      linkedin: "https://linkedin.com/in/sanderfernandez",
+      email: "sander.fernandez@itla.edu.do"
     },
-    {
-      id: 3,
-      nombre: "Luis Miguel Fernández",
-      matricula: "2021-9012",
-      telefono: "+1 (809) 555-0103",
-      telegram: "luismiguel_api",
-      foto: "https://via.placeholder.com/150/FF9800/FFFFFF?text=LM",
-      rol: "Desarrollador Backend & API",
-      descripcion: "Estudiante de Desarrollo de Software especializado en desarrollo de APIs y gestión de bases de datos.",
-      habilidades: ["Node.js", "Express", "MongoDB", "PostgreSQL", "REST APIs"],
-      github: "https://github.com/luismiguel",
-      linkedin: "https://linkedin.com/in/luismiguel",
-      email: "luis.fernandez@itla.edu.do"
+         {
+       id: 3,
+       nombre: "Ronell Sebastián Medina Pineda",
+       matricula: "2023-1035",
+       telefono: "+1 (809) 555-0103",
+       telegram: "ronellmedina_api",
+       rol: "Desarrollador Backend & API Integration",
+      descripcion: "Estudiante de Desarrollo de Software especializado en desarrollo de APIs y integración de servicios. Responsable de la conectividad con el backend.",
+      habilidades: ["Node.js", "Express", "REST APIs", "Database", "API Integration", "Testing"],
+      github: "https://github.com/ronellmedina",
+      linkedin: "https://linkedin.com/in/ronellmedina",
+      email: "ronell.medina@itla.edu.do"
     },
-    {
-      id: 4,
-      nombre: "María Elena González",
-      matricula: "2021-3456",
-      telefono: "+1 (809) 555-0104",
-      telegram: "mariaelena_qa",
-      foto: "https://via.placeholder.com/150/9C27B0/FFFFFF?text=ME",
-      rol: "Tester & QA Engineer",
-      descripcion: "Estudiante de Desarrollo de Software con experiencia en testing automatizado y control de calidad.",
-      habilidades: ["Jest", "Cypress", "Testing Manual", "JIRA", "Selenium"],
-      github: "https://github.com/mariaelena",
-      linkedin: "https://linkedin.com/in/mariaelena",
-      email: "maria.gonzalez@itla.edu.do"
-    },
-    {
-      id: 5,
-      nombre: "José Antonio Pérez",
-      matricula: "2021-7890",
-      telefono: "+1 (809) 555-0105",
-      telegram: "joseantonio_dev",
-      foto: "https://via.placeholder.com/150/607D8B/FFFFFF?text=JA",
-      rol: "Desarrollador Frontend & Mobile",
-      descripcion: "Estudiante de Desarrollo de Software especializado en tecnologías frontend y desarrollo móvil.",
-      habilidades: ["React", "TypeScript", "Ionic", "Capacitor", "PWA"],
-      github: "https://github.com/joseantonio",
-      linkedin: "https://linkedin.com/in/joseantonio",
-      email: "jose.perez@itla.edu.do"
+         {
+       id: 4,
+       nombre: "Carolin Cristal Ortiz Alcántara",
+       matricula: "2023-1333",
+       telefono: "+1 (809) 555-0104",
+       telegram: "carolinortiz_qa",
+       rol: "Tester & QA Engineer",
+      descripcion: "Estudiante de Desarrollo de Software con experiencia en testing automatizado y control de calidad. Asegura la funcionalidad y usabilidad de la aplicación.",
+      habilidades: ["Testing Manual", "QA", "Documentación", "User Testing", "Bug Tracking", "Quality Assurance"],
+      github: "https://github.com/carolinortiz",
+      linkedin: "https://linkedin.com/in/carolinortiz",
+      email: "carolin.ortiz@itla.edu.do"
     }
   ];
 
@@ -245,13 +226,13 @@ const AcercaDe: React.FC = () => {
                   </IonItem>
                 </IonCol>
                 <IonCol size="6">
-                  <IonItem lines="none">
-                    <IonIcon icon={personOutline} slot="start" color="primary" />
-                    <IonLabel>
-                      <h3>Equipo</h3>
-                      <p>5 Desarrolladores</p>
-                    </IonLabel>
-                  </IonItem>
+                                      <IonItem lines="none">
+                      <IonIcon icon={personOutline} slot="start" color="primary" />
+                      <IonLabel>
+                        <h3>Equipo</h3>
+                        <p>4 Desarrolladores</p>
+                      </IonLabel>
+                    </IonItem>
                 </IonCol>
               </IonRow>
             </IonGrid>
@@ -282,24 +263,15 @@ const AcercaDe: React.FC = () => {
               <IonCol size="12" sizeMd="6" key={desarrollador.id}>
                 <IonCard>
                   <IonCardContent>
-                    <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-                      <IonAvatar style={{ 
-                        width: '80px', 
-                        height: '80px', 
-                        margin: '0 auto 10px auto',
-                        border: '3px solid var(--ion-color-primary)'
-                      }}>
-                        <img src={desarrollador.foto} alt={desarrollador.nombre} />
-                      </IonAvatar>
-                      
-                      <h3 style={{ 
-                        fontSize: '1.1em', 
-                        margin: '0 0 5px 0',
-                        fontWeight: 'bold',
-                        color: '#333'
-                      }}>
-                        {desarrollador.nombre}
-                      </h3>
+                                         <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+                       <h3 style={{ 
+                         fontSize: '1.1em', 
+                         margin: '0 0 5px 0',
+                         fontWeight: 'bold',
+                         color: '#333'
+                       }}>
+                         {desarrollador.nombre}
+                       </h3>
                       
                       <p style={{ 
                         fontSize: '0.9em', 
@@ -325,19 +297,29 @@ const AcercaDe: React.FC = () => {
                       {desarrollador.descripcion}
                     </p>
                     
-                    {/* Habilidades */}
-                    <div style={{ marginBottom: '15px' }}>
-                      <h4 style={{ fontSize: '0.9em', margin: '0 0 8px 0', color: '#333' }}>
-                        Habilidades:
-                      </h4>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-                                                 {desarrollador.habilidades.map((habilidad, index) => (
-                           <IonChip key={index} color="light">
+                                         {/* Habilidades */}
+                     <div style={{ marginBottom: '15px' }}>
+                       <h4 style={{ fontSize: '0.9em', margin: '0 0 8px 0', color: '#333', fontWeight: '600' }}>
+                         Habilidades:
+                       </h4>
+                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                         {desarrollador.habilidades.map((habilidad, index) => (
+                           <IonChip 
+                             key={index} 
+                             color="primary"
+                             style={{
+                               '--background': '#e3f2fd',
+                               '--color': '#1976d2',
+                               '--border-color': '#2196F3',
+                               fontSize: '0.75em',
+                               fontWeight: '500'
+                             }}
+                           >
                              <IonLabel>{habilidad}</IonLabel>
                            </IonChip>
                          ))}
-                      </div>
-                    </div>
+                       </div>
+                     </div>
 
                     {/* Botones de contacto */}
                     <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
@@ -434,9 +416,9 @@ const AcercaDe: React.FC = () => {
               <p style={{ margin: '0 0 5px 0', fontSize: '0.9em' }}>
                 <strong>Versión:</strong> 1.0.0
               </p>
-              <p style={{ margin: '0 0 5px 0', fontSize: '0.9em' }}>
-                <strong>Fecha de lanzamiento:</strong> Diciembre 2024
-              </p>
+                             <p style={{ margin: '0 0 5px 0', fontSize: '0.9em' }}>
+                 <strong>Fecha de lanzamiento:</strong> Diciembre 2025
+               </p>
               <p style={{ margin: '0 0 5px 0', fontSize: '0.9em' }}>
                 <strong>Institución:</strong> Instituto Tecnológico de Las Américas (ITLA)
               </p>
