@@ -8,9 +8,11 @@ import {
   IonMenu,
   IonMenuToggle,
   IonButton,
+  IonToast,
 } from '@ionic/react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useState } from 'react';
 import {
   homeOutline,
   logInOutline,
@@ -44,6 +46,7 @@ interface AppPage {
 const SimpleMenu: React.FC = () => {
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
+  const [showLogoutToast, setShowLogoutToast] = useState(false);
 
   // Páginas públicas (siempre visibles)
   const publicPages: AppPage[] = [
@@ -79,122 +82,134 @@ const SimpleMenu: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      setShowLogoutToast(true);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
   };
 
   return (
-    <IonMenu contentId="main" type="overlay">
-      <IonContent>
-        <IonList id="main-list">
-          <IonListHeader>
-            Menú 🌱
-          </IonListHeader>
-          
-          {/* Información del usuario si está autenticado */}
-          {isAuthenticated && user && (
-            <>
-              <IonListHeader>Usuario</IonListHeader>
-              <IonItem lines="none">
-                <IonIcon aria-hidden="true" slot="start" ios={personOutline} md={personOutline} />
-                <IonLabel>
-                  <h3>{user.nombre} {user.apellido}</h3>
-                  <p>{user.correo}</p>
-                </IonLabel>
-              </IonItem>
-            </>
-          )}
-          
-          {/* Páginas principales */}
-          <IonListHeader>Páginas Principales</IonListHeader>
-          {publicPages.map((appPage, index) => (
-            <IonMenuToggle key={index} autoHide={false}>
+    <>
+      <IonMenu contentId="main" type="overlay">
+        <IonContent>
+          <IonList id="main-list">
+            <IonListHeader>
+              Menú 🌱
+            </IonListHeader>
+            
+            {/* Información del usuario si está autenticado */}
+            {isAuthenticated && user && (
+              <>
+                <IonListHeader>Usuario</IonListHeader>
+                <IonItem lines="none">
+                  <IonIcon aria-hidden="true" slot="start" ios={personOutline} md={personOutline} />
+                  <IonLabel>
+                    <h3>{user.nombre} {user.apellido}</h3>
+                    <p>{user.correo}</p>
+                  </IonLabel>
+                </IonItem>
+              </>
+            )}
+            
+            {/* Páginas principales */}
+            <IonListHeader>Páginas Principales</IonListHeader>
+            {publicPages.map((appPage, index) => (
+              <IonMenuToggle key={index} autoHide={false}>
+                <IonItem
+                  className={location.pathname === appPage.url ? 'selected' : ''}
+                  routerLink={appPage.url}
+                  routerDirection="none"
+                  lines="none"
+                  detail={false}
+                >
+                  <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                  <IonLabel>{appPage.title}</IonLabel>
+                </IonItem>
+              </IonMenuToggle>
+            ))}
+
+            {/* Páginas de autenticación (solo para usuarios no autenticados) */}
+            {!isAuthenticated && (
+              <>
+                <IonListHeader>Autenticación</IonListHeader>
+                {authPages.map((appPage, index) => (
+                  <IonMenuToggle key={index} autoHide={false}>
+                    <IonItem
+                      className={location.pathname === appPage.url ? 'selected' : ''}
+                      routerLink={appPage.url}
+                      routerDirection="none"
+                      lines="none"
+                      detail={false}
+                    >
+                      <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                      <IonLabel>{appPage.title}</IonLabel>
+                    </IonItem>
+                  </IonMenuToggle>
+                ))}
+              </>
+            )}
+
+            {/* Páginas protegidas (solo para usuarios autenticados) */}
+            {isAuthenticated && (
+              <>
+                <IonListHeader>Área Personal</IonListHeader>
+                {protectedPages.map((appPage, index) => (
+                  <IonMenuToggle key={index} autoHide={false}>
+                    <IonItem
+                      className={location.pathname === appPage.url ? 'selected' : ''}
+                      routerLink={appPage.url}
+                      routerDirection="none"
+                      lines="none"
+                      detail={false}
+                    >
+                      <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                      <IonLabel>{appPage.title}</IonLabel>
+                    </IonItem>
+                  </IonMenuToggle>
+                ))}
+                
+                {/* Botón de logout */}
+                <IonMenuToggle autoHide={false}>
+                  <IonItem
+                    button
+                    onClick={handleLogout}
+                    lines="none"
+                    detail={false}
+                  >
+                    <IonIcon aria-hidden="true" slot="start" ios={logOutOutline} md={logOutOutline} />
+                    <IonLabel>Cerrar Sesión</IonLabel>
+                  </IonItem>
+                </IonMenuToggle>
+              </>
+            )}
+
+            {/* Página de prueba de autenticación (solo en desarrollo) */}
+            <IonListHeader>Desarrollo</IonListHeader>
+            <IonMenuToggle autoHide={false}>
               <IonItem
-                className={location.pathname === appPage.url ? 'selected' : ''}
-                routerLink={appPage.url}
+                className={location.pathname === '/auth-test' ? 'selected' : ''}
+                routerLink="/auth-test"
                 routerDirection="none"
                 lines="none"
                 detail={false}
               >
-                <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                <IonLabel>{appPage.title}</IonLabel>
+                <IonIcon aria-hidden="true" slot="start" ios={shieldCheckmarkOutline} md={shieldCheckmarkOutline} />
+                <IonLabel>Auth Test</IonLabel>
               </IonItem>
             </IonMenuToggle>
-          ))}
-
-          {/* Páginas de autenticación (solo para usuarios no autenticados) */}
-          {!isAuthenticated && (
-            <>
-              <IonListHeader>Autenticación</IonListHeader>
-              {authPages.map((appPage, index) => (
-                <IonMenuToggle key={index} autoHide={false}>
-                  <IonItem
-                    className={location.pathname === appPage.url ? 'selected' : ''}
-                    routerLink={appPage.url}
-                    routerDirection="none"
-                    lines="none"
-                    detail={false}
-                  >
-                    <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                    <IonLabel>{appPage.title}</IonLabel>
-                  </IonItem>
-                </IonMenuToggle>
-              ))}
-            </>
-          )}
-
-          {/* Páginas protegidas (solo para usuarios autenticados) */}
-          {isAuthenticated && (
-            <>
-              <IonListHeader>Área Personal</IonListHeader>
-              {protectedPages.map((appPage, index) => (
-                <IonMenuToggle key={index} autoHide={false}>
-                  <IonItem
-                    className={location.pathname === appPage.url ? 'selected' : ''}
-                    routerLink={appPage.url}
-                    routerDirection="none"
-                    lines="none"
-                    detail={false}
-                  >
-                    <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                    <IonLabel>{appPage.title}</IonLabel>
-                  </IonItem>
-                </IonMenuToggle>
-              ))}
-              
-              {/* Botón de logout */}
-              <IonMenuToggle autoHide={false}>
-                <IonItem
-                  button
-                  onClick={handleLogout}
-                  lines="none"
-                  detail={false}
-                >
-                  <IonIcon aria-hidden="true" slot="start" ios={logOutOutline} md={logOutOutline} />
-                  <IonLabel>Cerrar Sesión</IonLabel>
-                </IonItem>
-              </IonMenuToggle>
-            </>
-          )}
-
-          {/* Página de prueba de autenticación (solo en desarrollo) */}
-          <IonListHeader>Desarrollo</IonListHeader>
-          <IonMenuToggle autoHide={false}>
-            <IonItem
-              className={location.pathname === '/auth-test' ? 'selected' : ''}
-              routerLink="/auth-test"
-              routerDirection="none"
-              lines="none"
-              detail={false}
-            >
-              <IonIcon aria-hidden="true" slot="start" ios={shieldCheckmarkOutline} md={shieldCheckmarkOutline} />
-              <IonLabel>Auth Test</IonLabel>
-            </IonItem>
-          </IonMenuToggle>
-        </IonList>
-      </IonContent>
-    </IonMenu>
+          </IonList>
+        </IonContent>
+      </IonMenu>
+      
+      <IonToast
+        isOpen={showLogoutToast}
+        onDidDismiss={() => setShowLogoutToast(false)}
+        message="Sesión cerrada exitosamente"
+        duration={2000}
+        position="top"
+        color="success"
+      />
+    </>
   );
 };
 

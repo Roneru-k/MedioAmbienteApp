@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useHistory } from 'react-router-dom';
 import storage from '../utils/storage';
 
 interface Usuario {
@@ -38,6 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<Usuario | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const history = useHistory();
 
   // Verificar si hay sesión guardada al cargar la aplicación
   useEffect(() => {
@@ -83,8 +85,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setToken(null);
       setUser(null);
       setIsAuthenticated(false);
+      
+      // Redirigir a la página de login después de cerrar sesión
+      history.push('/login');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
+      // Aún redirigir en caso de error
+      history.push('/login');
     }
   };
 

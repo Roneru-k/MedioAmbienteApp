@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Redirect, RouteProps } from 'react-router-dom';
+import { Route, Redirect, RouteProps, useHistory } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { IonLoading } from '@ionic/react';
 import storage from '../utils/storage';
@@ -13,6 +13,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   ...rest 
 }) => {
   const { isAuthenticated, loading, logout } = useAuth();
+  const history = useHistory();
 
   // Verificar si el token existe en storage al montar el componente
   useEffect(() => {
@@ -21,12 +22,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         const token = await storage.get('token');
         if (!token && isAuthenticated) {
           // Si no hay token pero el estado dice que está autenticado, hacer logout
-          logout();
+          await logout();
+          history.push('/login');
         }
       } catch (error) {
         console.error('Error verificando token:', error);
         if (isAuthenticated) {
-          logout();
+          await logout();
+          history.push('/login');
         }
       }
     };
@@ -34,7 +37,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     if (!loading) {
       checkToken();
     }
-  }, [loading, isAuthenticated, logout]);
+  }, [loading, isAuthenticated, logout, history]);
 
   if (loading) {
     return <IonLoading isOpen={true} message="Verificando autenticación..." />;
