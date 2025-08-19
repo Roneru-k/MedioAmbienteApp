@@ -274,78 +274,105 @@ const Voluntariado: React.FC = () => {
             <IonCardTitle>Solicitar Ser Voluntario</IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
-            <p style={{ marginBottom: '20px', color: '#666' }}>
+            <p style={{ 
+              marginBottom: '24px', 
+              color: '#666',
+              fontSize: '0.95em',
+              lineHeight: '1.6',
+              padding: '0 4px'
+            }}>
               Completa el siguiente formulario para solicitar ser voluntario. 
               Revisaremos tu solicitud y te contactaremos en un plazo máximo de 5 días hábiles.
             </p>
 
-            <IonItem>
-              <IonLabel position="floating">Número de Cédula *</IonLabel>
+            <IonItem style={{ marginBottom: '8px', '--padding-start': '0', '--padding-end': '0' }}>
+              <IonLabel position="floating" style={{ marginBottom: '8px', fontWeight: '500' }}>
+                Número de Cédula *
+              </IonLabel>
               <IonInput
                 value={cedula}
                 onIonChange={(e) => setCedula(e.detail.value!)}
                 placeholder="Ej: 123-4567890-1"
                 maxlength={13}
+                style={{ marginTop: '4px' }}
               />
             </IonItem>
 
-            <IonItem>
-              <IonLabel position="floating">Nombre *</IonLabel>
+            <IonItem style={{ marginBottom: '8px', '--padding-start': '0', '--padding-end': '0' }}>
+              <IonLabel position="floating" style={{ marginBottom: '8px', fontWeight: '500' }}>
+                Nombre *
+              </IonLabel>
               <IonInput
                 value={nombre}
                 onIonChange={(e) => setNombre(e.detail.value!)}
                 placeholder="Ej: Juan Carlos"
                 maxlength={100}
+                style={{ marginTop: '4px' }}
               />
             </IonItem>
 
-            <IonItem>
-              <IonLabel position="floating">Apellido *</IonLabel>
+            <IonItem style={{ marginBottom: '8px', '--padding-start': '0', '--padding-end': '0' }}>
+              <IonLabel position="floating" style={{ marginBottom: '8px', fontWeight: '500' }}>
+                Apellido *
+              </IonLabel>
               <IonInput
                 value={apellido}
                 onIonChange={(e) => setApellido(e.detail.value!)}
                 placeholder="Ej: Pérez"
                 maxlength={100}
+                style={{ marginTop: '4px' }}
               />
             </IonItem>
 
-            <IonItem>
-              <IonLabel position="floating">Correo Electrónico *</IonLabel>
+            <IonItem style={{ marginBottom: '8px', '--padding-start': '0', '--padding-end': '0' }}>
+              <IonLabel position="floating" style={{ marginBottom: '8px', fontWeight: '500' }}>
+                Correo Electrónico *
+              </IonLabel>
               <IonInput
                 type="email"
                 value={email}
                 onIonChange={(e) => setEmail(e.detail.value!)}
                 placeholder="usuario@ejemplo.com"
+                style={{ marginTop: '4px' }}
               />
             </IonItem>
 
-            <IonItem>
-              <IonLabel position="floating">Teléfono *</IonLabel>
+            <IonItem style={{ marginBottom: '8px', '--padding-start': '0', '--padding-end': '0' }}>
+              <IonLabel position="floating" style={{ marginBottom: '8px', fontWeight: '500' }}>
+                Teléfono *
+              </IonLabel>
               <IonInput
                 type="tel"
                 value={telefono}
                 onIonChange={(e) => setTelefono(e.detail.value!)}
                 placeholder="Ej: 809-555-0101"
+                style={{ marginTop: '4px' }}
               />
             </IonItem>
 
-            <IonItem>
-              <IonLabel position="floating">Contraseña *</IonLabel>
+            <IonItem style={{ marginBottom: '8px', '--padding-start': '0', '--padding-end': '0' }}>
+              <IonLabel position="floating" style={{ marginBottom: '8px', fontWeight: '500' }}>
+                Contraseña *
+              </IonLabel>
               <IonInput
                 type="password"
                 value={password}
                 onIonChange={(e) => setPassword(e.detail.value!)}
                 placeholder="Mínimo 6 caracteres"
+                style={{ marginTop: '4px' }}
               />
             </IonItem>
 
-            <IonItem>
-              <IonLabel position="floating">Confirmar Contraseña *</IonLabel>
+            <IonItem style={{ marginBottom: '8px', '--padding-start': '0', '--padding-end': '0' }}>
+              <IonLabel position="floating" style={{ marginBottom: '8px', fontWeight: '500' }}>
+                Confirmar Contraseña *
+              </IonLabel>
               <IonInput
                 type="password"
                 value={confirmPassword}
                 onIonChange={(e) => setConfirmPassword(e.detail.value!)}
                 placeholder="Repite tu contraseña"
+                style={{ marginTop: '4px' }}
               />
             </IonItem>
 
@@ -353,7 +380,13 @@ const Voluntariado: React.FC = () => {
               expand="block"
               onClick={handleSubmit}
               disabled={loading || !cedula || !nombre || !apellido || !email || !password || !confirmPassword || !telefono}
-              style={{ marginTop: '20px' }}
+              style={{ 
+                marginTop: '24px', 
+                marginBottom: '16px',
+                height: '48px',
+                fontSize: '16px',
+                fontWeight: '600'
+              }}
             >
               {loading ? (
                 <>
@@ -368,10 +401,21 @@ const Voluntariado: React.FC = () => {
               )}
             </IonButton>
 
-            <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+            <div style={{ 
+              marginTop: '16px', 
+              padding: '16px', 
+              backgroundColor: '#f8f9fa', 
+              borderRadius: '12px',
+              border: '1px solid #e9ecef'
+            }}>
               <IonText color="medium">
-                <p style={{ margin: 0, fontSize: '0.85em' }}>
-                  <strong>Nota:</strong> Al enviar esta solicitud, aceptas recibir 
+                <p style={{ 
+                  margin: 0, 
+                  fontSize: '0.9em',
+                  lineHeight: '1.5',
+                  color: '#6c757d'
+                }}>
+                  <strong style={{ color: '#495057' }}>Nota:</strong> Al enviar esta solicitud, aceptas recibir 
                   comunicaciones del Ministerio de Medio Ambiente relacionadas con 
                   el voluntariado. Tus datos serán tratados con confidencialidad.
                 </p>
