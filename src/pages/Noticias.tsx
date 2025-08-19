@@ -22,32 +22,33 @@ import {
   IonBadge,
   IonModal,
   IonButtons,
-  IonBackButton
+  IonGrid,
+  IonRow,
+  IonCol
 } from '@ionic/react';
 import {
   newspaperOutline,
   timeOutline,
-  personOutline,
+  calendarOutline,
   searchOutline,
   closeOutline,
   shareOutline,
-  bookmarkOutline
+  bookmarkOutline,
+  eyeOutline,
+  informationCircleOutline
 } from 'ionicons/icons';
 import { useState, useEffect } from 'react';
 import { getNoticias } from '../utils/api';
 import './Page.css';
 
 interface Noticia {
-  id: number;
+  id: string;
   titulo: string;
-  descripcion: string;
+  resumen: string;
   contenido: string;
   imagen: string;
   fecha: string;
-  autor: string;
-  categoria: string;
-  tags: string[];
-  vista_previa?: string;
+  fecha_creacion: string;
 }
 
 const Noticias: React.FC = () => {
@@ -63,11 +64,7 @@ const Noticias: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setFilteredNoticias(noticias);
-    } else {
-      handleSearch(searchTerm);
-    }
+    filterNoticias();
   }, [searchTerm, noticias]);
 
   const loadNoticias = async () => {
@@ -83,37 +80,49 @@ const Noticias: React.FC = () => {
       // Datos mock para pruebas cuando la API no está disponible
       const mockNoticias = [
         {
-          id: 1,
-          titulo: "Nueva iniciativa de reforestación en Santo Domingo",
-          descripcion: "El Ministerio de Medio Ambiente lanza programa masivo de plantación de árboles",
-          contenido: "El Ministerio de Medio Ambiente y Recursos Naturales anunció hoy una nueva iniciativa para reforestar las principales áreas urbanas de Santo Domingo. El programa incluirá la plantación de más de 10,000 árboles nativos en parques, avenidas y espacios públicos.\n\nEsta iniciativa forma parte del plan nacional de desarrollo sostenible y busca mejorar la calidad del aire, reducir la temperatura urbana y crear espacios más saludables para los ciudadanos.\n\nEl proyecto comenzará en el próximo mes y contará con la participación de voluntarios, organizaciones ambientales y la comunidad en general.",
-          imagen: "https://via.placeholder.com/400x200/4CAF50/FFFFFF?text=Reforestación",
-          fecha: "2025-01-15T10:00:00Z",
-          autor: "Ministerio de Medio Ambiente",
-          categoria: "Conservación",
-          tags: ["reforestación", "santo domingo", "árboles", "sostenibilidad"]
+          id: "000001",
+          titulo: "Ministerio de Medio Ambiente lanza campaña de reforestación nacional",
+          resumen: "Se plantarán más de 1 millón de árboles en todo el país durante 2025.",
+          contenido: "El Ministerio de Medio Ambiente y Recursos Naturales anunció hoy el lanzamiento de la campaña nacional de reforestación más ambiciosa de la historia del país. La iniciativa busca plantar más de 1 millón de árboles en todas las provincias durante el año 2025, con el objetivo de recuperar la cobertura boscosa y combatir el cambio climático.\n\nEsta campaña forma parte del Plan Nacional de Desarrollo Sostenible y contará con la participación de voluntarios, organizaciones ambientales, empresas privadas y la comunidad en general. Los árboles serán plantados en áreas urbanas, rurales y en las principales cuencas hidrográficas del país.\n\nEl ministro destacó que esta iniciativa no solo ayudará a combatir el cambio climático, sino que también mejorará la calidad del aire, reducirá la erosión del suelo y creará espacios más saludables para todos los dominicanos.",
+          imagen: "https://via.placeholder.com/400x200/4CAF50/FFFFFF?text=Reforestación+Nacional",
+          fecha: "2025-01-15 14:30:00",
+          fecha_creacion: "2025-01-15 10:00:00"
         },
         {
-          id: 2,
-          titulo: "Protección de especies marinas en las costas dominicanas",
-          descripcion: "Nuevas medidas para proteger la biodiversidad marina",
-          contenido: "El gobierno dominicano implementará nuevas medidas de protección para las especies marinas en peligro de extinción. Estas medidas incluyen la creación de nuevas áreas marinas protegidas y la regulación de actividades pesqueras.\n\nLas nuevas regulaciones protegerán especies como las tortugas marinas, los manatíes y los corales, que son fundamentales para el ecosistema marino del Caribe.\n\nEsta iniciativa se desarrolla en colaboración con organizaciones internacionales de conservación marina y representa un paso importante hacia la protección de nuestros océanos.",
+          id: "000002",
+          titulo: "Nuevas medidas para proteger especies marinas en peligro",
+          resumen: "Implementación de regulaciones estrictas para la conservación de la biodiversidad marina.",
+          contenido: "El gobierno dominicano implementará nuevas medidas de protección para las especies marinas en peligro de extinción. Estas medidas incluyen la creación de nuevas áreas marinas protegidas y la regulación de actividades pesqueras en zonas sensibles.\n\nLas nuevas regulaciones protegerán especies como las tortugas marinas, los manatíes, los corales y los peces de arrecife, que son fundamentales para el ecosistema marino del Caribe. También se establecerán períodos de veda más estrictos y se implementarán sistemas de monitoreo satelital para las embarcaciones pesqueras.\n\nEsta iniciativa se desarrolla en colaboración con organizaciones internacionales de conservación marina y representa un paso importante hacia la protección de nuestros océanos y la sostenibilidad de la pesca en la región.",
           imagen: "https://via.placeholder.com/400x200/2196F3/FFFFFF?text=Protección+Marina",
-          fecha: "2025-01-14T15:30:00Z",
-          autor: "Dirección de Recursos Marinos",
-          categoria: "Biodiversidad",
-          tags: ["especies marinas", "protección", "biodiversidad", "océanos"]
+          fecha: "2025-01-14 15:30:00",
+          fecha_creacion: "2025-01-14 12:00:00"
         },
         {
-          id: 3,
-          titulo: "Programa de reciclaje comunitario en Santiago",
-          descripcion: "Santiago se convierte en modelo de gestión de residuos",
-          contenido: "La ciudad de Santiago implementará un programa integral de reciclaje comunitario que servirá como modelo para otras ciudades del país. El programa incluye la separación de residuos en origen, centros de acopio comunitarios y educación ambiental.\n\nLos ciudadanos recibirán contenedores especiales para separar plásticos, papel, vidrio y residuos orgánicos. El programa también incluye incentivos para las comunidades que logren mayores tasas de reciclaje.\n\nEsta iniciativa busca reducir la cantidad de residuos que llegan a los vertederos y promover una cultura de consumo responsable.",
-          imagen: "https://via.placeholder.com/400x200/8BC34A/FFFFFF?text=Reciclaje",
-          fecha: "2025-01-13T09:15:00Z",
-          autor: "Ayuntamiento de Santiago",
-          categoria: "Gestión de Residuos",
-          tags: ["reciclaje", "santiago", "residuos", "comunidad"]
+          id: "000003",
+          titulo: "Programa integral de reciclaje en Santiago",
+          resumen: "Santiago se convierte en modelo de gestión sostenible de residuos sólidos.",
+          contenido: "La ciudad de Santiago implementará un programa integral de reciclaje comunitario que servirá como modelo para otras ciudades del país. El programa incluye la separación de residuos en origen, centros de acopio comunitarios, educación ambiental y un sistema de incentivos para las comunidades.\n\nLos ciudadanos recibirán contenedores especiales para separar plásticos, papel, vidrio, metales y residuos orgánicos. El programa también incluye la instalación de puntos de reciclaje en espacios públicos, escuelas y centros comerciales.\n\nEsta iniciativa busca reducir la cantidad de residuos que llegan a los vertederos en un 60% durante el primer año y promover una cultura de consumo responsable y economía circular en la región.",
+          imagen: "https://via.placeholder.com/400x200/8BC34A/FFFFFF?text=Reciclaje+Santiago",
+          fecha: "2025-01-13 09:15:00",
+          fecha_creacion: "2025-01-13 08:00:00"
+        },
+        {
+          id: "000004",
+          titulo: "Instalación de paneles solares en edificios públicos",
+          resumen: "Gobierno inicia transición hacia energías renovables en instituciones estatales.",
+          contenido: "El gobierno dominicano inició un programa masivo de instalación de paneles solares en edificios públicos de todo el país. Esta iniciativa forma parte del plan de transición energética hacia fuentes renovables y busca reducir la dependencia de combustibles fósiles.\n\nEl programa comenzará con 50 edificios gubernamentales en Santo Domingo, incluyendo ministerios, hospitales y escuelas públicas. Se espera que esta primera fase genere suficiente energía para abastecer el equivalente a 5,000 hogares y reduzca las emisiones de CO2 en 2,000 toneladas anuales.\n\nLa inversión total del programa asciende a 50 millones de dólares y se espera que se complete en los próximos 3 años, beneficiando a más de 200 edificios públicos en todo el territorio nacional.",
+          imagen: "https://via.placeholder.com/400x200/FF9800/FFFFFF?text=Energía+Solar",
+          fecha: "2025-01-12 16:45:00",
+          fecha_creacion: "2025-01-12 14:00:00"
+        },
+        {
+          id: "000005",
+          titulo: "Nueva área protegida en la Cordillera Central",
+          resumen: "Creación del Parque Nacional Valle Nuevo II para proteger ecosistemas únicos.",
+          contenido: "El Ministerio de Medio Ambiente anunció la creación de una nueva área protegida en la Cordillera Central, que será conocida como Parque Nacional Valle Nuevo II. Esta nueva reserva protegerá más de 15,000 hectáreas de bosque nublado y páramo, hábitat de especies endémicas únicas.\n\nLa nueva área protegida alberga más de 200 especies de aves, 50 especies de mamíferos y cientos de especies de plantas endémicas. También protege importantes fuentes de agua que abastecen a varias provincias del país.\n\nEsta declaración representa un paso importante en la conservación de la biodiversidad dominicana y fortalece el sistema nacional de áreas protegidas, que ahora cuenta con más de 120 áreas bajo protección legal.",
+          imagen: "https://via.placeholder.com/400x200/795548/FFFFFF?text=Valle+Nuevo",
+          fecha: "2025-01-11 11:20:00",
+          fecha_creacion: "2025-01-11 09:00:00"
         }
       ];
       
@@ -125,30 +134,16 @@ const Noticias: React.FC = () => {
     }
   };
 
-  const handleSearch = async (query: string) => {
-    if (query.trim() === '') {
+  const filterNoticias = () => {
+    if (searchTerm.trim() === '') {
       setFilteredNoticias(noticias);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      // Since buscarNoticias is not in the API documentation, we'll filter locally
+    } else {
       const filtered = noticias.filter(noticia =>
-        noticia.titulo.toLowerCase().includes(query.toLowerCase()) ||
-        noticia.descripcion.toLowerCase().includes(query.toLowerCase())
+        noticia.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        noticia.resumen.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        noticia.contenido.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredNoticias(filtered);
-    } catch (err: any) {
-      console.error('Error en búsqueda:', err);
-      // If search fails, filter locally
-      const filtered = noticias.filter(noticia =>
-        noticia.titulo.toLowerCase().includes(query.toLowerCase()) ||
-        noticia.descripcion.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredNoticias(filtered);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -157,6 +152,16 @@ const Noticias: React.FC = () => {
     return date.toLocaleDateString('es-DO', {
       year: 'numeric',
       month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const formatDateShort = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-DO', {
+      month: 'short',
       day: 'numeric'
     });
   };
@@ -165,14 +170,25 @@ const Noticias: React.FC = () => {
     if (navigator.share) {
       navigator.share({
         title: noticia.titulo,
-        text: noticia.descripcion,
+        text: noticia.resumen,
         url: window.location.href
       });
     } else {
       // Fallback para navegadores que no soportan Web Share API
-      navigator.clipboard.writeText(`${noticia.titulo}\n${noticia.descripcion}`);
+      navigator.clipboard.writeText(`${noticia.titulo}\n${noticia.resumen}`);
       alert('Enlace copiado al portapapeles');
     }
+  };
+
+  const getTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Hace menos de 1 hora';
+    if (diffInHours < 24) return `Hace ${diffInHours} horas`;
+    if (diffInHours < 48) return 'Hace 1 día';
+    return formatDateShort(dateString);
   };
 
   return (
@@ -224,62 +240,55 @@ const Noticias: React.FC = () => {
 
         {/* Lista de noticias */}
         {!loading && !error && (
-          <IonList>
-            {filteredNoticias.map((noticia) => (
-              <IonCard key={noticia.id}>
-                <IonCardContent>
-                  <IonItem button onClick={() => setSelectedNoticia(noticia)}>
-                    <IonThumbnail slot="start">
-                      <IonImg 
-                        src={noticia.imagen || 'https://via.placeholder.com/100x100/4CAF50/FFFFFF?text=Noticia'} 
-                        alt={noticia.titulo}
-                      />
-                    </IonThumbnail>
-                    <IonLabel>
-                      <h2>{noticia.titulo}</h2>
-                      <p>{noticia.descripcion}</p>
-                      <div style={{ marginTop: '8px' }}>
-                        <IonChip color="primary" size="small">
+          <IonGrid>
+            <IonRow>
+              {filteredNoticias.map((noticia) => (
+                <IonCol size="12" sizeMd="6" sizeLg="4" key={noticia.id}>
+                  <IonCard 
+                    style={{ 
+                      height: '100%', 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => setSelectedNoticia(noticia)}
+                  >
+                    <IonImg 
+                      src={noticia.imagen || 'https://via.placeholder.com/400x200/4CAF50/FFFFFF?text=Noticia'} 
+                      alt={noticia.titulo}
+                      style={{ height: '200px', objectFit: 'cover' }}
+                    />
+                    <IonCardHeader>
+                      <IonCardTitle style={{ fontSize: '1.1em', margin: 0 }}>
+                        {noticia.titulo}
+                      </IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent style={{ flex: 1 }}>
+                      <p style={{ 
+                        fontSize: '0.9em', 
+                        lineHeight: '1.4', 
+                        color: '#666',
+                        marginBottom: '15px'
+                      }}>
+                        {noticia.resumen}
+                      </p>
+                      
+                      <div style={{ marginTop: 'auto' }}>
+                        <IonChip color="primary">
                           <IonIcon icon={timeOutline} />
-                          <IonLabel>{formatDate(noticia.fecha)}</IonLabel>
+                          <IonLabel>{getTimeAgo(noticia.fecha)}</IonLabel>
                         </IonChip>
-                        <IonChip color="secondary" size="small">
-                          <IonIcon icon={personOutline} />
-                          <IonLabel>{noticia.autor}</IonLabel>
+                        <IonChip color="secondary">
+                          <IonIcon icon={calendarOutline} />
+                          <IonLabel>{formatDateShort(noticia.fecha_creacion)}</IonLabel>
                         </IonChip>
-                        {noticia.categoria && (
-                          <IonChip color="tertiary" size="small">
-                            <IonLabel>{noticia.categoria}</IonLabel>
-                          </IonChip>
-                        )}
                       </div>
-                    </IonLabel>
-                  </IonItem>
-                  
-                  {/* Botones de acción */}
-                  <IonItem lines="none">
-                    <IonButton 
-                      fill="clear" 
-                      slot="start" 
-                      size="small"
-                      onClick={() => setSelectedNoticia(noticia)}
-                    >
-                      Leer más
-                    </IonButton>
-                    <IonButton 
-                      fill="clear" 
-                      slot="end" 
-                      size="small"
-                      onClick={() => handleShare(noticia)}
-                    >
-                      <IonIcon icon={shareOutline} />
-                      Compartir
-                    </IonButton>
-                  </IonItem>
-                </IonCardContent>
-              </IonCard>
-            ))}
-          </IonList>
+                    </IonCardContent>
+                  </IonCard>
+                </IonCol>
+              ))}
+            </IonRow>
+          </IonGrid>
         )}
 
         {/* Mensaje cuando no hay resultados */}
@@ -318,9 +327,12 @@ const Noticias: React.FC = () => {
                   <IonImg 
                     src={selectedNoticia.imagen || 'https://via.placeholder.com/400x200/4CAF50/FFFFFF?text=Noticia'} 
                     alt={selectedNoticia.titulo}
+                    style={{ height: '250px', objectFit: 'cover' }}
                   />
                   <IonCardHeader>
-                    <IonCardTitle>{selectedNoticia.titulo}</IonCardTitle>
+                    <IonCardTitle style={{ fontSize: '1.3em', margin: 0 }}>
+                      {selectedNoticia.titulo}
+                    </IonCardTitle>
                   </IonCardHeader>
                   <IonCardContent>
                     <div style={{ marginBottom: '15px' }}>
@@ -329,37 +341,56 @@ const Noticias: React.FC = () => {
                         {formatDate(selectedNoticia.fecha)}
                       </IonBadge>
                       <IonBadge color="secondary" style={{ marginLeft: '8px' }}>
-                        <IonIcon icon={personOutline} />
-                        {selectedNoticia.autor}
+                        <IonIcon icon={calendarOutline} />
+                        Creado: {formatDate(selectedNoticia.fecha_creacion)}
                       </IonBadge>
-                      {selectedNoticia.categoria && (
-                        <IonBadge color="tertiary" style={{ marginLeft: '8px' }}>
-                          {selectedNoticia.categoria}
-                        </IonBadge>
-                      )}
                     </div>
                     
-                    <p style={{ fontSize: '1.1em', lineHeight: '1.6', marginBottom: '15px' }}>
-                      {selectedNoticia.descripcion}
-                    </p>
+                    <div style={{ 
+                      backgroundColor: '#f8f9fa', 
+                      padding: '15px', 
+                      borderRadius: '8px',
+                      marginBottom: '20px',
+                      borderLeft: '4px solid #4CAF50'
+                    }}>
+                      <h4 style={{ margin: '0 0 10px 0', color: '#4CAF50' }}>
+                        <IonIcon icon={newspaperOutline} /> Resumen
+                      </h4>
+                      <p style={{ 
+                        fontSize: '1.1em', 
+                        lineHeight: '1.6', 
+                        margin: 0,
+                        color: '#333'
+                      }}>
+                        {selectedNoticia.resumen}
+                      </p>
+                    </div>
                     
-                    <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                    <div style={{ 
+                      whiteSpace: 'pre-wrap', 
+                      lineHeight: '1.8',
+                      fontSize: '1em',
+                      color: '#444'
+                    }}>
                       {selectedNoticia.contenido}
                     </div>
                     
-                    {/* Tags */}
-                    {selectedNoticia.tags && selectedNoticia.tags.length > 0 && (
-                      <div style={{ marginTop: '20px' }}>
-                        <h4>Etiquetas:</h4>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-                          {selectedNoticia.tags.map((tag, index) => (
-                            <IonChip key={index} size="small" color="medium">
-                              {tag}
-                            </IonChip>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    <div style={{ 
+                      marginTop: '25px', 
+                      padding: '15px', 
+                      backgroundColor: '#f0f8ff',
+                      borderRadius: '8px',
+                      border: '1px solid #e3f2fd'
+                    }}>
+                      <h4 style={{ margin: '0 0 10px 0', color: '#1976d2' }}>
+                        <IonIcon icon={informationCircleOutline} /> Información Adicional
+                      </h4>
+                      <p style={{ margin: 0, fontSize: '0.9em', color: '#666' }}>
+                        Esta noticia fue publicada por el Ministerio de Medio Ambiente y Recursos Naturales 
+                        de la República Dominicana. Para más información, contacta a través de nuestros 
+                        canales oficiales.
+                      </p>
+                    </div>
                   </IonCardContent>
                 </IonCard>
               </IonContent>
