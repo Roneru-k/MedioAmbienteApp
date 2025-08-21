@@ -1,0 +1,269 @@
+/* Estilos para marcadores personalizados del mapa */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-marker div {
+  transition: transform 0.2s ease-in-out;
+}
+
+.custom-marker:hover div {
+  transform: scale(1.2);
+}
+
+/* Estilos para el mapa */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+.leaflet-popup-content {
+  margin: 8px 12px;
+}
+
+.leaflet-popup-content h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.leaflet-popup-content p {
+  margin: 8px 0;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Estilos para filtros superpuestos */
+.filters-overlay {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  right: 10px;
+  z-index: 1000;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
+/* Estilos para estados de carga */
+.loading-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+/* Estilos para errores */
+.error-overlay {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+/* Estilos para tarjetas de áreas protegidas */
+.area-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.area-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.area-card img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.area-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.area-card-description {
+  font-size: 0.9em;
+  line-height: 1.4;
+  color: #666;
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.area-card-chips {
+  margin-top: auto;
+}
+
+/* Estilos para modales de detalles */
+.detail-modal-content {
+  max-width: 100%;
+  margin: 0;
+}
+
+.detail-modal-image {
+  height: 250px;
+  object-fit: cover;
+}
+
+.detail-description-box {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #4CAF50;
+}
+
+.detail-location-section {
+  margin-bottom: 20px;
+}
+
+.detail-location-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+/* Estilos para botones de acción */
+.action-button {
+  margin-bottom: 10px;
+}
+
+.action-button:last-child {
+  margin-bottom: 0;
+}
+
+/* Estilos para contadores de resultados */
+.results-counter {
+  padding: 10px 16px;
+  font-size: 0.9em;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Estilos para mensajes de no resultados */
+.no-results-card {
+  text-align: center;
+  padding: 20px;
+}
+
+.no-results-icon {
+  color: #ccc;
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.no-results-title {
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.no-results-description {
+  color: #888;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+/* Estilos para botones flotantes */
+.fab-button {
+  --background: var(--ion-color-primary);
+  --color: white;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .filters-overlay {
+    top: 50px;
+    left: 5px;
+    right: 5px;
+    padding: 10px;
+  }
+  
+  .area-card img {
+    height: 150px;
+  }
+  
+  .detail-modal-image {
+    height: 200px;
+  }
+}
+
+/* Estilos para animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Estilos para iconos de tipo */
+.type-icon {
+  font-size: 1.2em;
+  margin-right: 5px;
+}
+
+/* Estilos para badges de información */
+.info-badge {
+  margin-left: 8px;
+}
+
+.info-badge:first-child {
+  margin-left: 0;
+}
+
+/* Estilos para segmentos de filtro */
+.filter-segment {
+  margin-bottom: 10px;
+}
+
+/* Estilos para búsqueda */
+.search-container {
+  margin-bottom: 15px;
+}
+
+/* Estilos para botones de limpiar filtros */
+.clear-filters-button {
+  --color: var(--ion-color-medium);
+  font-size: 0.8em;
+}
+
+/* Estilos para el mapa en modo móvil */
+@media (max-width: 576px) {
+  .leaflet-popup-content {
+    margin: 6px 8px;
+    font-size: 0.9em;
+  }
+  
+  .leaflet-popup-content h3 {
+    font-size: 1em;
+  }
+  
+  .custom-marker div {
+    width: 16px;
+    height: 16px;
+    font-size: 8px;
+  }
+}
